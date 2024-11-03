@@ -1,5 +1,5 @@
 import React from 'react';
-import './css/App.css'
+import './styles/css/App.css'
 import ProductList from './components/ProductList';
 import { productList } from './data/productsListData';
 
