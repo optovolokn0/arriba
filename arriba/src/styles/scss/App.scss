@@ -1,11 +1,15 @@
+@import './cardItem';
+@import './header';
+
+
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-.App{
-    margin: 30px;
+.main{
+    margin: 10px 20px;
 }
 
 .title{
@@ -18,11 +22,39 @@
     flex-wrap: wrap;
 }
 
+// Категории
+
+.categories{
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+
+    &__title{
+        display: flex;
+        justify-content: center;
+        font-size: 24px;
+    }
+
+    &__item{
+        font-size: 20px;
+    }
+}
+
+.products-list{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    &__title{
+        font-size: 30px;
+    }
+}
+
 .product{
     display: flex;
+    flex-direction: column;
     align-items: center;
     width: 200px;
-    margin: 10px;
     padding: 10px;
     justify-content: space-between;
     border: black solid 1px;

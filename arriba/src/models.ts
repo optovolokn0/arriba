@@ -1,12 +1,24 @@
 export interface IProduct{
     id: number,
-    title: string,
-    descr: string,
-    price: number
+    name: string,
+    photo: string,
+    price: number,
+    category_id: number
 }
 
-export interface IProductList{
+export interface ICategory{
     id: number,
-    title: string,
+    name: string,
+    slug: string, //человеческий url
+    parentId?: number //для вложенных категорий 
+}
+
+export interface IProductsList{
+    category_id: number,
     list: IProduct[]
+}
+
+export interface ICategoryPageProps {
+    products: IProduct[];
+    categories: ICategory[];
 }
