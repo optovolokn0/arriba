@@ -1,44 +1,194 @@
-from django.shortcuts import render
-from rest_framework import viewsets
-from .models import Category, Manufacturer, Product, Customer, Store, Purchase, InvoiceRecord, ProductPriceChange
-from .serializers import CategorySerializer, ManufacturerSerializer, ProductSerializer, CustomerSerializer, StoreSerializer, PurchaseSerializer, InvoiceRecordSerializer, ProductPriceChangeSerializer
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.decorators import action
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+from django.shortcuts import get_object_or_404
+from .permissions import IsAdminOrSeller, IsClient, IsOwnerOrAdmin
+from .models import Product, Category, Brand, User, Role, Basket, Purchase, Rating, ProductPriceChange, InvoiceRecord, Review
+from .serializers import (
+    ProductSerializer, CategorySerializer, BrandSerializer, UserSerializer, RoleSerializer, BasketSerializer,
+    PurchaseSerializer, RatingSerializer, PriceChangeSerializer, InvoiceEntrySerializer, ReviewSerializer, RegisterSerializer
+)
 # Create your views here.
-class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
+class RegisterUserView(APIView):
+    permission_classes = [AllowAny]
 
-class ManufacturerViewSet(viewsets.ModelViewSet):
-    queryset = Manufacturer.objects.all()
-    serializer_class = ManufacturerSerializer
-    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
+    def post(self, request, *args, **kwargs):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
 
-class CustomerViewSet(viewsets.ModelViewSet):
-    queryset = Customer.objects.all()
-    serializer_class = CustomerSerializer
-    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
+    def perform_create(self, serializer):
+        # Создаем товар с текущим продавцом
+        serializer.save(seller=self.request.user)
+    
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    def add_rating(self, request, pk=None):
+        product = self.get_object()
+        user = request.user
+        rate = request.data.get('rate')
 
-class StoreViewSet(viewsets.ModelViewSet):
-    queryset = Store.objects.all()
-    serializer_class = StoreSerializer
-    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
+        # Добавление рейтинга для товара
+        Rating.objects.create(user=user, product=product, rate=rate)
+        product.update_rating()
+        return Response({'status': 'rating added'})
+    
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            # Любой пользователь может просматривать список и детали товаров
+            permission_classes = [AllowAny]
+        else:
+            # Только аутентифицированные администраторы и продавцы могут создавать и редактировать
+            permission_classes = [IsAuthenticated, IsAdminOrSeller]
+        return [permission() for permission in permission_classes]
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            # Любой пользователь может просматривать категории
+            permission_classes = [AllowAny]
+        else:
+            # Только администраторы могут редактировать категории
+            permission_classes = [IsAuthenticated, IsAdminUser]
+        return [permission() for permission in permission_classes]
+
+class BrandViewSet(viewsets.ModelViewSet):
+    queryset = Brand.objects.all()
+    serializer_class = BrandSerializer
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            # Любой пользователь может просматривать бренды
+            permission_classes = [AllowAny]
+        else:
+            # Только администраторы могут редактировать бренды
+            permission_classes = [IsAuthenticated, IsAdminUser]
+        return [permission() for permission in permission_classes]
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            # Только аутентифицированные пользователи могут просматривать свой профиль
+            permission_classes = [IsAuthenticated]
+        elif self.action in ['update', 'partial_update']:
+            # Пользователи могут редактировать свой профиль, администраторы - всех
+            if self.request.user.is_admin:
+                permission_classes = [IsAuthenticated, IsAdminUser]
+            else:
+                permission_classes = [IsAuthenticated]
+        else:
+            # Только администраторы могут удалять пользователей
+            permission_classes = [IsAuthenticated, IsAdminUser]
+        return [permission() for permission in permission_classes] 
+
+
+class RoleViewSet(viewsets.ModelViewSet):
+    queryset = Role.objects.all()
+    serializer_class = RoleSerializer
+    def get_permissions(self):
+        # Только администраторы могут управлять ролями
+        permission_classes = [IsAuthenticated, IsAdminUser]
+        return [permission() for permission in permission_classes]
+
+class BasketViewSet(viewsets.ModelViewSet):
+    serializer_class = BasketSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Отображаем корзину только для текущего пользователя
+        return Basket.objects.filter(user=self.request.user)
+    def get_permissions(self):
+        # Только аутентифицированные пользователи могут управлять корзиной
+        permission_classes = [IsAuthenticated, IsClient]
+        return [permission() for permission in permission_classes]
+
+class RatingViewSet(viewsets.ModelViewSet):
+    queryset = Rating.objects.all()
+    serializer_class = RatingSerializer
+    def get_permissions(self):
+        # Разрешаем всем просматривать рейтинги, но редактировать могут только администраторы
+        if self.action in ['list', 'retrieve']:
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [IsAdminUser]
+        return [permission() for permission in permission_classes]
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    def get_permissions(self):
+        # Просмотр отзывов доступен всем, добавление/изменение/удаление - только аутентифицированным пользователям
+        if self.action in ['list', 'retrieve']:
+            permission_classes = [AllowAny]
+        elif self.action in ['create']:
+            permission_classes = [IsAuthenticated]
+        else:
+            # Изменение и удаление только владельцем отзыва или админом
+            permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
+        return [permission() for permission in permission_classes]
 
 class PurchaseViewSet(viewsets.ModelViewSet):
     queryset = Purchase.objects.all()
     serializer_class = PurchaseSerializer
-    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve', 'create']:
+            # Доступ к списку, деталям и созданию - только для аутентифицированных пользователей
+            permission_classes = [IsAuthenticated]
+        else:
+            # Изменение и удаление только для администратора или владельца покупки
+            permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
+        return [permission() for permission in permission_classes]
 
-class InvoiceRecordViewSet(viewsets.ModelViewSet):
-    queryset = InvoiceRecord.objects.all()
-    serializer_class = InvoiceRecordSerializer
-    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
+    def get_queryset(self):
+        # Ограничиваем доступ к покупкам текущего пользователя
+        if self.request.user.is_staff:
+            return Purchase.objects.all()
+        return Purchase.objects.filter(user=self.request.user)
 
-class ProductPriceChangeViewSet(viewsets.ModelViewSet):
+class PriceChangeViewSet(viewsets.ModelViewSet):
     queryset = ProductPriceChange.objects.all()
-    serializer_class = ProductPriceChangeSerializer
-    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
+    serializer_class = PriceChangeSerializer
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            # Просмотр изменений цен доступен только всем
+            permission_classes = [AllowAny]
+        elif self.action in ['create']:
+            # Добавление записей об изменении цен доступно продавцам и администраторам
+            permission_classes = [IsAuthenticated, IsAdminOrSeller]
+        else:
+            # Изменение и удаление записей доступно только администраторам
+            permission_classes = [IsAuthenticated, IsAdminUser]
+        return [permission() for permission in permission_classes]
+
+class InvoiceEntryViewSet(viewsets.ModelViewSet):
+    queryset = InvoiceRecord.objects.all()
+    serializer_class = InvoiceEntrySerializer
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            # Просмотр записей счетов доступен только владельцу и администраторам
+            permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
+        elif self.action in ['create']:
+            # Создание записи доступно продавцам и администраторам
+            permission_classes = [IsAuthenticated, IsAdminOrSeller]
+        else:
+            # Изменение и удаление доступно только администраторам
+            permission_classes = [IsAuthenticated, IsAdminUser]
+        return [permission() for permission in permission_classes]
+
+    def get_queryset(self):
+        # Ограничиваем доступ к счетам текущего пользователя
+        if self.request.user.is_staff:
+            return InvoiceRecord.objects.all()
+        return InvoiceRecord.objects.filter(user=self.request.user)
