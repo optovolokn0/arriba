@@ -10,7 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +29,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+APPEND_SLASH=False
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,8 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'store',
     'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_simplejwt',
     'corsheaders',
     'simple_history',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -73,6 +78,21 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'arriba.wsgi.application'
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
 
 
 # Database
@@ -109,18 +129,14 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-LOG_VIEWER_FILES = ['logfile1', 'logfile2', ...]
-LOG_VIEWER_FILES_PATTERN = '*.log*'
-LOG_VIEWER_FILES_DIR = 'logs/'
-LOG_VIEWER_PAGE_LENGTH = 25       # total log lines per-page
-LOG_VIEWER_MAX_READ_LINES = 1000  # total log lines will be read
-LOG_VIEWER_FILE_LIST_MAX_ITEMS_PER_PAGE = 25 # Max log files loaded in Datatable per page
-LOG_VIEWER_PATTERNS = ['[INFO]', '[DEBUG]', '[WARNING]', '[ERROR]', '[CRITICAL]']
-LOG_VIEWER_EXCLUDE_TEXT_PATTERN = None  # String regex expression to exclude the log from line
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
+
+AUTH_USER_MODEL = "store.User"
 
 LANGUAGE_CODE = 'en-us'
 

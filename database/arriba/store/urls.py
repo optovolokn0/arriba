@@ -1,16 +1,22 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import CategoryViewSet, ManufacturerViewSet, ProductViewSet, CustomerViewSet, StoreViewSet, PurchaseViewSet, InvoiceRecordViewSet, ProductPriceChangeViewSet
+from .views import (
+    ProductViewSet, CategoryViewSet, BrandViewSet, UserViewSet, RoleViewSet,
+    BasketViewSet, PurchaseViewSet, ReviewViewSet, PriceChangeViewSet, InvoiceEntryViewSet
+)
+
 
 router = DefaultRouter()
-router.register(r'categories', CategoryViewSet)
-router.register(r'manufacturers', ManufacturerViewSet)
-router.register(r'products', ProductViewSet)
-router.register(r'customers', CustomerViewSet)
-router.register(r'stores', StoreViewSet)
-router.register(r'purchases', PurchaseViewSet)
-router.register(r'invoice-records', InvoiceRecordViewSet)
-router.register(r'product-price-changes', ProductPriceChangeViewSet)
+router.register(r'products', ProductViewSet, basename='product')
+router.register(r'categories', CategoryViewSet, basename='category')
+router.register(r'brands', BrandViewSet, basename='brand')
+router.register(r'users', UserViewSet, basename='user')
+router.register(r'roles', RoleViewSet, basename='role')
+router.register(r'basket', BasketViewSet, basename='basket')
+router.register(r'purchases', PurchaseViewSet, basename='purchase')
+router.register(r'reviews', ReviewViewSet, basename='review')
+router.register(r'price-changes', PriceChangeViewSet, basename='pricechange')
+router.register(r'invoice-entries', InvoiceEntryViewSet, basename='invoiceentry')
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -1,29 +1,71 @@
 from rest_framework import serializers
-from .models import Category, Manufacturer, Product, Customer, Store, Purchase, InvoiceRecord, ProductPriceChange
+from .models import Product, Category, Brand, User, Role, Basket, Purchase, Rating, ProductPriceChange, InvoiceRecord, Review
+
+class ProductSerializer(serializers.ModelSerializer):
+    rating = serializers.FloatField(read_only=True)
+    
+    class Meta:
+        model = Product
+        fields = '__all__'
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
 
-class ManufacturerSerializer(serializers.ModelSerializer):
+class BrandSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Manufacturer
+        model = Brand
         fields = '__all__'
 
-class ProductSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Product
+        model = User
+        fields = ['name', 'email', 'password', 'role']
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        # Создание пользователя с захэшированным паролем
+        user = User.objects.create_user(**validated_data)
+        return user
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+    password_confirm = serializers.CharField(write_only=True)
+    class Meta:
+        model = User
+        fields = ['name', 'email', 'password', 'password_confirm', 'role']
+        extra_kwargs = {
+            'password': {'write_only': True},
+        }
+
+    def validate(self, data):
+        # Проверка, что пароли совпадают
+        if data['password'] != data['password_confirm']:
+            raise serializers.ValidationError("Passwords do not match.")
+        return data
+
+    def create(self, validated_data):
+        # Удаляем поле подтверждения пароля, так как оно не нужно для создания пользователя
+        validated_data.pop('password_confirm')
+        # Создаём нового пользователя
+        user = User.objects.create_user(
+            name=validated_data['name'],
+            email=validated_data['email'],
+            password=validated_data['password'],
+            role=validated_data.get('role', 'client'),  # По умолчанию "client"
+        )
+        return user
+
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
         fields = '__all__'
 
-class CustomerSerializer(serializers.ModelSerializer):
+class BasketSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Customer
-        fields = '__all__'
-
-class StoreSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Store
+        model = Basket
         fields = '__all__'
 
 class PurchaseSerializer(serializers.ModelSerializer):
@@ -31,12 +73,22 @@ class PurchaseSerializer(serializers.ModelSerializer):
         model = Purchase
         fields = '__all__'
 
-class InvoiceRecordSerializer(serializers.ModelSerializer):
+class RatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rating
+        fields = '__all__'
+
+class PriceChangeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductPriceChange
+        fields = '__all__'
+
+class InvoiceEntrySerializer(serializers.ModelSerializer):
     class Meta:
         model = InvoiceRecord
         fields = '__all__'
 
-class ProductPriceChangeSerializer(serializers.ModelSerializer):
+class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ProductPriceChange
+        model = Review
         fields = '__all__'
