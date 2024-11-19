@@ -1,5 +1,31 @@
-.header-container{
+
+.header{
+    a {
+        cursor: pointer;
+    }
+
+    &__logo{
+        color: #000;
+    }
+
+    &__container{
+        padding: 5px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #F7CD46;
+    }
+
+    &__input{
+        width: 250px;
+        padding: 5px;
+        border: 2px solid #5AC3B0;
+        border-radius: 10px;
+        background-color: #fff;
+    }
+}
+
+.right-container{
     display: flex;
-    justify-content: space-between;
-    background-color: orange;
+    gap: 40px;
 }
