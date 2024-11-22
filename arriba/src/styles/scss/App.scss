@@ -4,13 +4,8 @@
 @import './categories';
 @import './basket';
 @import './payment';
-
-
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+@import './admin';
+@import './modals';
 
 .main{
     margin: 10px 20px;

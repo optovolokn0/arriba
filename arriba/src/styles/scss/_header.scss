@@ -2,6 +2,7 @@
 .header{
     a {
         cursor: pointer;
+        color: #000;
     }
 
     &__logo{
@@ -28,4 +29,14 @@
 .right-container{
     display: flex;
     gap: 40px;
+
+    &__item{
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        padding: 5px;
+        border: 1px solid #000;
+        border-radius: 5px;
+
+    }
 }

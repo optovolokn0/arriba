@@ -1,0 +1,29 @@
+.modal{
+    &__form{
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__input{
+        padding: 5px;
+        border: 1px solid #000;
+        border-radius: 3px;
+        font-size: 18px;
+    }
+}
+
+.info{
+    &__container{
+        margin-top: 5px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__btn{
+        border: 1px solid #000;
+        border-radius: 5px;
+        background-color: red;
+    }
+    
+}
+    

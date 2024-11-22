@@ -1,5 +1,6 @@
 .header a {
   cursor: pointer;
+  color: #000;
 }
 .header__logo {
   color: #000;
@@ -22,6 +23,14 @@
 .right-container {
   display: flex;
   gap: 40px;
+}
+.right-container__item {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 5px;
+  border: 1px solid #000;
+  border-radius: 5px;
 }
 
 .auth__box-bg {
@@ -189,10 +198,40 @@
   background-color: #5AC3B0;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+.admin__container {
+  display: flex;
+  width: 20%;
+  flex-direction: column;
+  gap: 20px;
+}
+.admin__btn {
+  border: 1px solid blue;
+  background-color: blue;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 20px;
+}
+
+.modal__form {
+  display: flex;
+  flex-direction: column;
+}
+.modal__input {
+  padding: 5px;
+  border: 1px solid #000;
+  border-radius: 3px;
+  font-size: 18px;
+}
+
+.info__container {
+  margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+.info__btn {
+  border: 1px solid #000;
+  border-radius: 5px;
+  background-color: red;
 }
 
 .main {

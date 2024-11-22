@@ -1,8 +1,9 @@
 import { makeAutoObservable } from "mobx"
-import { ICategory, IProduct } from "../models"
+import { IBrand, ICategory, IProduct } from "../models"
 
 export default class ProductStore {
     _categories: ICategory[]
+    _brands: IBrand[]
     _products: IProduct[]
     _selectedCategory: number
     _basket: IProduct[]
@@ -14,6 +15,14 @@ export default class ProductStore {
             { id: 3, name: 'Спорт' },
             { id: 4, name: 'Одежда' }
         ]
+
+        this._brands = [
+            { id: 1, name: 'Samsung' },
+            { id: 2, name: 'test' },
+            { id: 3, name: 'test2' },
+            { id: 4, name: 'test3' }
+        ]
+
         this._products = [
             {
                 id: 1, name: 'iphone', photo: '/cardPhoto.png', price: 1200, category_id: 1,
@@ -103,6 +112,10 @@ export default class ProductStore {
         this._categories = categories
     }
 
+    setBrands(brands: IBrand[]){
+        this._brands = brands
+    }
+
     setProducts(products: IProduct[]) {
         this._products = products
     }
@@ -121,6 +134,10 @@ export default class ProductStore {
 
     get categories() {
         return this._categories
+    }
+
+    get brands() {
+        return this._brands
     }
 
     get products() {

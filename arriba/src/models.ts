@@ -13,6 +13,11 @@ export interface IInfo{
     descr: string
 }
 
+export interface IBrand{
+    id: number,
+    name: string
+}
+
 export interface ICategory{
     id: number,
     name: string
