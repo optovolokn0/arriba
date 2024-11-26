@@ -1,17 +1,21 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import action
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
 from .permissions import IsAdminOrSeller, IsClient, IsOwnerOrAdmin
-from .models import Product, Category, Brand, User, Role, Basket, Purchase, Rating, ProductPriceChange, InvoiceRecord, Review
+from .models import Product, Category, Brand, User, Role, Basket, Purchase, Rating, ProductPriceChange, InvoiceRecord, Review, VerificationToken
 from .serializers import (
-    ProductSerializer, CategorySerializer, BrandSerializer, UserSerializer, RoleSerializer, BasketSerializer,
+    PasswordResetConfirmSerializer, PasswordResetRequestSerializer, ProductSerializer, CategorySerializer, BrandSerializer, UserSerializer, RoleSerializer, BasketSerializer,
     PurchaseSerializer, RatingSerializer, PriceChangeSerializer, InvoiceEntrySerializer, ReviewSerializer, RegisterSerializer
 )
 # Create your views here.
+
+User = get_user_model()
+
 class RegisterUserView(APIView):
     permission_classes = [AllowAny]
 
@@ -153,9 +157,10 @@ class PurchaseViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         # Ограничиваем доступ к покупкам текущего пользователя
-        if self.request.user.is_staff:
-            return Purchase.objects.all()
-        return Purchase.objects.filter(user=self.request.user)
+        purchase_id = self.request.query_params.get('purchase_id', None)
+        if purchase_id:
+            return self.queryset.filter(purchase_id=purchase_id)
+        return self.queryset
 
 class PriceChangeViewSet(viewsets.ModelViewSet):
     queryset = ProductPriceChange.objects.all()
@@ -192,3 +197,50 @@ class InvoiceEntryViewSet(viewsets.ModelViewSet):
         if self.request.user.is_staff:
             return InvoiceRecord.objects.all()
         return InvoiceRecord.objects.filter(user=self.request.user)
+    
+
+class VerifyEmailView(generics.GenericAPIView):
+    permission_classes = [AllowAny]
+    #TODO: add serializer
+    def get(self, request, token, *args, **kwargs):
+        try:
+            token_obj = VerificationToken.objects.get(token=token, is_used=False)
+            user = token_obj.user
+            user.is_active = True  # Активируем пользователя
+            user.save()
+            token_obj.is_used = True  # Отмечаем токен как использованный
+            token_obj.save()
+            return Response({'message': 'Email успешно подтверждён!'}, status=status.HTTP_200_OK)
+        except VerificationToken.DoesNotExist:
+            return Response({'message': 'Недействительный или использованный токен.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class PasswordResetRequestView(generics.GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = PasswordResetRequestSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'message': 'Инструкция по сбросу пароля отправлена на ваш email.'}, status=status.HTTP_200_OK)
+
+class PasswordResetConfirmView(generics.GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = PasswordResetConfirmSerializer
+
+    def post(self, request, token, *args, **kwargs):
+        try:
+            token_obj = VerificationToken.objects.get(token=token, is_used=False)
+            user = token_obj.user
+        except VerificationToken.DoesNotExist:
+            return Response({'message': 'Недействительный или использованный токен.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=user)
+
+        token_obj.is_used = True  # Отмечаем токен как использованный
+        token_obj.save()
+        return Response({'message': 'Пароль успешно изменён!'}, status=status.HTTP_200_OK)

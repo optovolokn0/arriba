@@ -1,7 +1,12 @@
+import datetime
+import random
 from django.db import models
+from django.dispatch import receiver
 from simple_history.models import HistoricalRecords
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group, Permission
 from django.contrib.auth.models import PermissionsMixin
+from django.db.models.signals import pre_save
+import uuid
 
 # Create your models here.
 class CustomUserManager(BaseUserManager):
@@ -104,7 +109,7 @@ class Product(models.Model):
         if not self.product_id:
             # Формат SKU
             category_code = str(self.category.category_id).zfill(3)  # Пример: 001
-            manufacturer_code = str(self.manufacturer.manufacturer_id).zfill(3)  # Пример: 005
+            manufacturer_code = str(self.brand.brand_id).zfill(3)  # Пример: 005
             product_code = str(Product.objects.count() + 1).zfill(4)  # Пример: 0001
             
             self.product_id = f"{category_code}-{manufacturer_code}-{product_code}"  # Пример SKU: 001-005-0001
@@ -158,7 +163,36 @@ class Purchase(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role__name': Role.CLIENT})
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sales', limit_choices_to={'role__name': Role.SELLER})
     purchase_date = models.DateTimeField(auto_now_add=True)
+    products = models.ManyToManyField(Product, through='PurchaseProduct')
     history = HistoricalRecords()
+
+    def __str__(self):
+        return f'Purchase {self.purchase_id} by {self.customer} on {self.purchase_date}'
+
+#Отслеживание артикулов товаров в заказах 
+class PurchaseProduct(models.Model):
+    purchase = models.ForeignKey(Purchase, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)  # Добавим количество товаров в заказе
+    purchase_sku = models.CharField(max_length=20, unique=True, editable=False)
+    def __str__(self):
+        return f'{self.product} in Purchase {self.purchase.purchase_id}'
+    
+# Генерация артикула покупки
+def generate_purchase_sku(purchase):
+    # Используем ID покупателя, ID продавца и текущий timestamp для уникальности
+    customer_id = str(purchase.customer.id).zfill(4)  # ID покупателя (4 цифры)
+    seller_id = str(purchase.seller.id).zfill(4)      # ID продавца (4 цифры)
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')  # Текущая дата и время (14 цифр)
+    random_part = str(random.randint(1000, 9999))  # Случайные 4 цифры
+    # Формируем артикул
+    return f"{customer_id}{seller_id}{timestamp}{random_part}"
+# Сигнал для автоматической генерации артикула
+@receiver(pre_save, sender=Purchase)
+def set_purchase_sku(sender, instance, **kwargs):
+    if not instance.purchase_sku:
+        instance.purchase_sku = generate_purchase_sku(instance)
+
 
 class InvoiceRecord(models.Model):
     invoice_record_id = models.AutoField(primary_key=True)
@@ -197,3 +231,13 @@ class BasketProduct(models.Model):
 
     def __str__(self):
         return f"{self.quantity} of {self.product.product_name} in basket"
+    
+
+class VerificationToken(models.Model):
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    token = models.UUIDField(default=uuid.uuid4, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_used = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Token for {self.user}"

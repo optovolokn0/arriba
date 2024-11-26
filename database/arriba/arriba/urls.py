@@ -45,4 +45,7 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view()),
     path('api/register/', views.RegisterUserView.as_view()),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0)),
+    path('api/verify-email/<uuid:token>/', views.VerifyEmailView.as_view()),
+    path('api/reset-password/', views.PasswordResetRequestView.as_view()),
+    path('api/reset-password-confirm/<uuid:token>/', views.PasswordResetConfirmView.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
