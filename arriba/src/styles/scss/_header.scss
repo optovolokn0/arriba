@@ -1,5 +1,42 @@
-.header-container{
+
+.header{
+    a {
+        cursor: pointer;
+        color: #000;
+    }
+
+    &__logo{
+        color: #000;
+    }
+
+    &__container{
+        padding: 5px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #F7CD46;
+    }
+
+    &__input{
+        width: 250px;
+        padding: 5px;
+        border: 2px solid #5AC3B0;
+        border-radius: 10px;
+        background-color: #fff;
+    }
+}
+
+.right-container{
     display: flex;
-    justify-content: space-between;
-    background-color: orange;
+    gap: 40px;
+
+    &__item{
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        padding: 5px;
+        border: 1px solid #000;
+        border-radius: 5px;
+
+    }
 }
