@@ -1,5 +1,13 @@
 from rest_framework import serializers
-from .models import Product, Category, Brand, User, Role, Basket, Purchase, Rating, ProductPriceChange, InvoiceRecord, Review
+from .models import Product, Category, Brand, PurchaseProduct, User, Role, Basket, Purchase, Rating, ProductPriceChange, InvoiceRecord, Review, VerificationToken
+from django.contrib.auth import get_user_model
+from django.core.mail import send_mail
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
+
+
 
 class ProductSerializer(serializers.ModelSerializer):
     rating = serializers.FloatField(read_only=True)
@@ -29,6 +37,7 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
 
+User = get_user_model()
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -56,7 +65,58 @@ class RegisterSerializer(serializers.ModelSerializer):
             password=validated_data['password'],
             role=validated_data.get('role', 'client'),  # По умолчанию "client"
         )
+        user.is_active = False  # Делаем пользователя неактивным до подтверждения email
+        user.save()
+
+        # Отправляем email для подтверждения
+        token = VerificationToken.objects.create(user=user)
+        current_site = "localhost:8000"
+        verification_link = f"http://{current_site}/api/verify-email/{token.token}/"
+        send_mail(
+            'Подтверждение регистрации',
+            f'Для завершения регистрации перейдите по ссылке: {verification_link}',
+            'webmaster@localhost',
+            [user.email],
+            fail_silently=False,
+        )
         return user
+
+class PasswordResetRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        if not User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Пользователь с таким email не найден.")
+        return value
+
+    def save(self):
+        email = self.validated_data['email']
+        user = User.objects.get(email=email)
+        
+        # Создаём токен для сброса пароля
+        token = VerificationToken.objects.create(user=user)
+        current_site = "localhost:8000"
+        reset_link = f"http://{current_site}/api/reset-password-confirm/{token.token}/"
+        send_mail(
+            'Сброс пароля',
+            f'Для сброса пароля перейдите по ссылке: {reset_link}',
+            'webmaster@localhost',
+            [user.email],
+            fail_silently=False,
+        )
+
+class PasswordResetConfirmSerializer(serializers.Serializer):
+    new_password = serializers.CharField(write_only=True)
+    new_password_confirm = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        if data['new_password'] != data['new_password_confirm']:
+            raise serializers.ValidationError("Пароли не совпадают.")
+        return data
+
+    def save(self, user):
+        user.set_password(self.validated_data['new_password'])
+        user.save()
 
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -68,7 +128,14 @@ class BasketSerializer(serializers.ModelSerializer):
         model = Basket
         fields = '__all__'
 
+class PurchaseProductSerializer(serializers.ModelSerializer):
+    product_sku = serializers.CharField(source='product.sku', read_only=True)
+    class Meta:
+        model = PurchaseProduct
+        fields = ['product_sku', 'quantity']
+
 class PurchaseSerializer(serializers.ModelSerializer):
+    products = PurchaseProductSerializer(many=True, source='purchaseproduct_set')
     class Meta:
         model = Purchase
         fields = '__all__'
