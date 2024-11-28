@@ -7,6 +7,7 @@ export default class ProductStore {
     _products: IProduct[]
     _selectedCategory: number
     _basket: IProduct[]
+    _favorites: IProduct[]
 
     constructor() {
         this._categories = [
@@ -105,6 +106,8 @@ export default class ProductStore {
         }]
         this._selectedCategory = NaN
 
+        this._favorites = []
+
         makeAutoObservable(this)
     }
 
@@ -132,6 +135,14 @@ export default class ProductStore {
         this._basket = this._basket.filter(product => product.id !== productId);
     }
 
+    addToFavorites(product: IProduct){
+        this._favorites.push(product)
+    }
+
+    removeFromFavorites(productId: number){
+        this._favorites = this._favorites.filter(product => product.id !== productId)
+    }
+
     get categories() {
         return this._categories
     }
@@ -150,5 +161,9 @@ export default class ProductStore {
 
     get basket() {
         return this._basket;
+    }
+
+    get favorites(){
+        return this._favorites
     }
 }
