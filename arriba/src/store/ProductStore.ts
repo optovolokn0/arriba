@@ -6,6 +6,7 @@ export default class ProductStore {
     _brands: IBrand[]
     _products: IProduct[]
     _selectedCategory: number
+    _selectedProduct: number
     _basket: IProduct[]
     _favorites: IProduct[]
 
@@ -84,28 +85,30 @@ export default class ProductStore {
             },
         ]
 
-        this._basket = [{
-            id: 1, name: 'iphone', photo: '/cardPhoto.png', price: 1200, category_id: 1,
-            description: [
-                { id: 1, title: 'Оперативная память', descr: '8 гб' },
-                { id: 2, title: 'Камера', descr: '50 мп' },
-                { id: 3, title: 'Процессор', descr: 'test' },
-                { id: 4, title: 'Количество ядер', descr: '8' },
-                { id: 5, title: 'Аккумулятор', descr: '5000' },
-            ]
-        },
-        {
-            id: 2, name: 'honor', photo: '/cardPhoto2.png', price: 2348, category_id: 1,
-            description: [
-                { id: 1, title: 'Оперативная память', descr: '13 гб' },
-                { id: 2, title: 'Камера', descr: 'asdfsd' },
-                { id: 3, title: 'Процессор', descr: 'test' },
-                { id: 4, title: 'Количество ядер', descr: '8' },
-                { id: 5, title: 'Аккумулятор', descr: 'asdfsdaf' },
-            ]
-        }]
-        this._selectedCategory = NaN
+        this._basket = []
 
+        // this._basket = [{
+        //     id: 1, name: 'iphone', photo: '/cardPhoto.png', price: 1200, category_id: 1,
+        //     description: [
+        //         { id: 1, title: 'Оперативная память', descr: '8 гб' },
+        //         { id: 2, title: 'Камера', descr: '50 мп' },
+        //         { id: 3, title: 'Процессор', descr: 'test' },
+        //         { id: 4, title: 'Количество ядер', descr: '8' },
+        //         { id: 5, title: 'Аккумулятор', descr: '5000' },
+        //     ]
+        // },
+        // {
+        //     id: 2, name: 'honor', photo: '/cardPhoto2.png', price: 2348, category_id: 1,
+        //     description: [
+        //         { id: 1, title: 'Оперативная память', descr: '13 гб' },
+        //         { id: 2, title: 'Камера', descr: 'asdfsd' },
+        //         { id: 3, title: 'Процессор', descr: 'test' },
+        //         { id: 4, title: 'Количество ядер', descr: '8' },
+        //         { id: 5, title: 'Аккумулятор', descr: 'asdfsdaf' },
+        //     ]
+        // }]
+        this._selectedCategory = NaN
+        this._selectedProduct = NaN
         this._favorites = []
 
         makeAutoObservable(this)
@@ -125,6 +128,10 @@ export default class ProductStore {
 
     setSelectedCategory(category: number) {
         this._selectedCategory = category
+    }
+    
+    setSelectedProduct(productId: number) {
+        this._selectedProduct = productId
     }
 
     addToBasket(product: IProduct) {
@@ -157,6 +164,10 @@ export default class ProductStore {
 
     get selectedCategory() {
         return this._selectedCategory
+    }
+
+    get selectedProduct() {
+        return this._selectedProduct
     }
 
     get basket() {

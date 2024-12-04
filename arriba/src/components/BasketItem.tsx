@@ -8,7 +8,6 @@ interface BasketItemProps{
 
 const BasketItem = (item: BasketItemProps) => {
     const { product } = useContext(Context)!
-
     return (
         <li className="basket-item" key={item.basketItem.id}>
             <img className="basket-item__img" src={item.basketItem.photo} alt="" />

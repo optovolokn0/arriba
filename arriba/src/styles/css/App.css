@@ -29,8 +29,6 @@
   align-items: center;
   gap: 3px;
   padding: 5px;
-  border: 1px solid #000;
-  border-radius: 5px;
 }
 
 .auth__box-bg {
@@ -87,7 +85,7 @@
   color: blue;
 }
 
-.product-page {
+.product-page__container {
   display: flex;
   gap: 30px;
   align-items: center;
@@ -161,6 +159,7 @@
 .basket__container {
   display: flex;
   justify-content: space-between;
+  align-items: start;
 }
 
 .basket-item {
@@ -235,7 +234,11 @@
 }
 
 .product {
+  display: flex;
+  flex-direction: column;
   position: relative;
+  padding: 5px;
+  border: rgba(0, 0, 0, 0.2) solid 1px;
 }
 .product__container {
   display: flex;
@@ -243,7 +246,6 @@
   width: 200px;
   padding: 10px;
   justify-content: space-between;
-  border: rgba(0, 0, 0, 0.2) solid 1px;
   cursor: pointer;
 }
 .product__like-svg {

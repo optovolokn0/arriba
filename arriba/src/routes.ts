@@ -4,7 +4,9 @@ import Basket from "./pages/Basket"
 import ProductPage from "./pages/ProductPage"
 import Shop from "./pages/Shop"
 import Favorites from "./pages/Favorites"
-import { ADMIN_ROUTE, BASKET_ROUTE, LOGIN_ROUTE, PRODUCT_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE, FAVORITES_ROUTE } from "./utils/consts"
+import Account from "./pages/Account"
+import { ADMIN_ROUTE, BASKET_ROUTE, LOGIN_ROUTE, PRODUCT_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE, FAVORITES_ROUTE, ACCOUNT_ROUTE } from "./utils/consts"
+
 
 export const authRoutes = [
     {
@@ -15,6 +17,10 @@ export const authRoutes = [
         path: BASKET_ROUTE,
         Component: Basket
     },
+    {
+        path: ACCOUNT_ROUTE,
+        Component: Account
+    }
 ]
 
 export const publicRoutes = [

@@ -1,33 +1,37 @@
-.product-page{
-    display: flex;
-    gap: 30px;
-    align-items: center;
+.product-page {
 
-    &__title{
+    &__container {
+        display: flex;
+        gap: 30px;
+        align-items: center;
+    }
+
+
+    &__title {
         font-size: 26px;
         font-weight: 600;
     }
 
-    &__bts-container{
+    &__bts-container {
         display: flex;
         flex-direction: column;
         gap: 10px;
     }
 
-    &__text-container{
+    &__text-container {
         display: flex;
         flex-direction: column;
         gap: 10px;
     }
 
-    &__price{
+    &__price {
         font-size: 20px;
         font-weight: 500;
     }
 }
 
 
-.add-to-basket-btn{
+.add-to-basket-btn {
     padding: 10px;
     border: 1px solid #5AC3B0;
     border-radius: 15px;

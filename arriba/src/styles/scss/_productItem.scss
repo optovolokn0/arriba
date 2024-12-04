@@ -1,13 +1,16 @@
 .product{
+    display: flex;
+    flex-direction: column;
     position: relative;
-    &__container{
+    padding: 5px;
+    border: rgba($color: #000000, $alpha: 0.2) solid 1px;
 
+    &__container{
         display: flex;
         flex-direction: column;
         width: 200px;
         padding: 10px;
         justify-content: space-between;
-        border: rgba($color: #000000, $alpha: 0.2) solid 1px;
         cursor: pointer;
     }
     
