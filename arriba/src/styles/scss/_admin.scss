@@ -1,7 +1,28 @@
 .admin{
     &__container{
         display: flex;
-        width: 20%;
+        justify-content: space-between;
+    }
+
+    &__lists{
+        display: flex;
+        gap: 50px;
+    }
+
+    &__list{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-size: 26px;
+        font-weight: 600;
+    }
+
+    &__item{
+        font-weight: normal;
+    }
+
+    &__btns-container{
+        display: flex;
         flex-direction: column;
         gap: 20px;
     }
