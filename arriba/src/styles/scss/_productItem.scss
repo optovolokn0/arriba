@@ -1,14 +1,28 @@
+
+.products-list{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    &__title{
+        font-size: 30px;
+    }
+}
+
+
 .product{
     display: flex;
     flex-direction: column;
     position: relative;
+    flex: 0 0 calc((100% - 80px) / 6);
     padding: 5px;
     border: rgba($color: #000000, $alpha: 0.2) solid 1px;
 
     &__container{
         display: flex;
         flex-direction: column;
-        width: 200px;
+        
         padding: 10px;
         justify-content: space-between;
         cursor: pointer;

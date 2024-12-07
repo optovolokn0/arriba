@@ -8,24 +8,22 @@ const ProductsList = observer(() => {
 
     const filteredProducts = product.products.filter((prod) => prod.category_id === product.selectedCategory)
     return (
-        <div>
-            <ul className="products-list">
-                {filteredProducts.length > 0 ?
-                    (filteredProducts.map(item => (
+        <ul className="products-list">
+            {filteredProducts.length > 0 ?
+                (filteredProducts.map(item => (
+                    <ProductItem key={item.id} productItem={item} />
+                )))
+                :
+                (
+                    // <span>Товары этой категории не найдены. Посмотрите другие товары</span>
+                    product.products.map(item => (
                         <ProductItem key={item.id} productItem={item} />
-                    )))
-                    :
-                    (
-                        // <span>Товары этой категории не найдены. Посмотрите другие товары</span>
-                        product.products.map(item => (
-                            <ProductItem key={item.id} productItem={item}/>
-                        ))
-                    )
+                    ))
+                )
 
-                }
-                
-            </ul>
-        </div>
+            }
+
+        </ul>
     )
 })
 

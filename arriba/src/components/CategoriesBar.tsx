@@ -2,17 +2,26 @@ import { observer } from "mobx-react-lite";
 import React, { useContext } from "react";
 import { Context } from "../main";
 
-const CategoriesBar = observer(() => {
+interface CategoriesBarProps {
+    onClose: () => void
+  }
+
+const CategoriesBar: React.FC<CategoriesBarProps> = observer(({ onClose }) => {
     const { product } = useContext(Context)!
+
+    const handleCategoryClick = (categoryId: number) => {
+        product.setSelectedCategory(categoryId)
+        onClose()
+      }
 
     return (
         <div className="categories">
-            <h3 className="categories__title">Категории</h3>
+            {/* <h3 className="categories__title">Категории</h3> */}
             <ul className="categories__list">
                 {product.categories.map(category =>
                     <li className="categories__item"
                      key={category.id}
-                     onClick={() => product.setSelectedCategory(category.id)}>
+                     onClick={() => handleCategoryClick(category.id)}>
                         {category.name}
                     </li>
                 )}

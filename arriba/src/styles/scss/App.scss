@@ -26,18 +26,9 @@
 
 .shop{
     display: flex;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding-inline: 50px;
     gap: 50px;
-}
-
-// Товары
-
-.products-list{
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-
-    &__title{
-        font-size: 30px;
-    }
 }
 

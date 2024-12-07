@@ -1,13 +1,25 @@
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { Context } from "../main"
 import { observer } from "mobx-react-lite"
 import { useNavigate } from "react-router-dom"
 import { ACCOUNT_ROUTE, ADMIN_ROUTE, BASKET_ROUTE, FAVORITES_ROUTE, LOGIN_ROUTE, ORDERS_ROUTE, SHOP_ROUTE } from "../utils/consts"
 import logo from '../../public/logoArriba.png'
+import ReactDOM from "react-dom"
+import CategoriesBar from "./CategoriesBar"
 
 const Header = observer(() => {
     const { user } = useContext(Context)!
     const history = useNavigate()
+
+    const [isCategoriesBarVisible, setIsCategoriesBarVisible] = useState(false);
+
+    const toggleCategoriesBar = () => {
+        setIsCategoriesBarVisible((prev) => !prev);
+    };
+
+    const closeCategoriesBar = () => {
+        setIsCategoriesBarVisible(false);
+      };
 
     return (
         <header className="header">
@@ -17,7 +29,21 @@ const Header = observer(() => {
                     <span>Arriba</span>
                 </a>
                 <div className="center-container">
-                    <button className="btn btn_catalog"></button>
+                    <button className="btn btn_catalog burger-container" onClick={toggleCategoriesBar}>
+                        <span className="burger-line"></span>
+                    </button>
+                    {/* Рендеринг панели каталога через портал */}
+                    {ReactDOM.createPortal(
+                        <>
+                            <div className={`categories__bar ${isCategoriesBarVisible ? "visible" : ""}`}>
+                                <CategoriesBar onClose={closeCategoriesBar}/>
+                            </div>
+                            {isCategoriesBarVisible && (
+                                <div className="overlay" onClick={closeCategoriesBar}></div>
+                            )}
+                        </>,
+                        document.body // рендерим в <body>
+                    )}
                     <input className="header__input" type="text" placeholder="Найти на Arriba" />
                 </div>
                 <div className="right-container">
