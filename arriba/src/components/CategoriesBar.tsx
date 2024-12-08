@@ -16,13 +16,12 @@ const CategoriesBar: React.FC<CategoriesBarProps> = observer(({ onClose }) => {
 
     return (
         <div className="categories">
-            {/* <h3 className="categories__title">Категории</h3> */}
             <ul className="categories__list">
                 {product.categories.map(category =>
                     <li className="categories__item"
-                     key={category.id}
-                     onClick={() => handleCategoryClick(category.id)}>
-                        {category.name}
+                     key={category.category_id}
+                     onClick={() => handleCategoryClick(category.category_id)}>
+                        {category.category_name}
                     </li>
                 )}
             </ul>

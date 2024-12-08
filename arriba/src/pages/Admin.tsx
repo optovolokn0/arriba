@@ -3,8 +3,10 @@ import CreateCategory from "../components/modals/CreateCategory";
 import CreateBrand from "../components/modals/CreateBrand";
 import CreateProduct from "../components/modals/CreateProduct";
 import { Context } from "../main";
+import { observer } from "mobx-react-lite";
 
-function Admin() {
+
+const Admin = observer(() => {
     const [categoryVisible, setCategoryVisible] = useState(false)
     const [brandVisible, setBrandVisible] = useState(false)
     const [productVisible, setProductVisible] = useState(false)
@@ -17,13 +19,13 @@ function Admin() {
                 <ul className="admin__list admin__list_categories">
                     Категории
                     {product.categories.map(item =>
-                        <li key={item.id} className="admin__item">{item.name}</li>
+                        <li key={item.category_id} className="admin__item">{item.category_name}</li>
                     )}
                 </ul>
                 <ul className="admin__list admin__list_brands">
                     Бренды
                     {product.brands.map(item =>
-                        <li key={item.id} className="admin__item">{item.name}</li>
+                        <li key={item.brand_id} className="admin__item">{item.brand_name}</li>
                     )}
                 </ul>
             </div>
@@ -35,9 +37,8 @@ function Admin() {
                 <CreateBrand show={brandVisible} onHide={() => setBrandVisible(false)} />
                 <CreateProduct show={productVisible} onHide={() => setProductVisible(false)} />
             </div>
-
         </div>
     )
-}
+})
 
 export default Admin

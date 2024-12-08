@@ -32,7 +32,7 @@ const Header = observer(() => {
                     <button className="btn btn_catalog burger-container" onClick={toggleCategoriesBar}>
                         <span className="burger-line"></span>
                     </button>
-                    {/* Рендеринг панели каталога через портал */}
+
                     {ReactDOM.createPortal(
                         <>
                             <div className={`categories__bar ${isCategoriesBarVisible ? "visible" : ""}`}>
@@ -42,7 +42,7 @@ const Header = observer(() => {
                                 <div className="overlay" onClick={closeCategoriesBar}></div>
                             )}
                         </>,
-                        document.body // рендерим в <body>
+                        document.body
                     )}
                     <input className="header__input" type="text" placeholder="Найти на Arriba" />
                 </div>
@@ -73,7 +73,7 @@ const Header = observer(() => {
                         <span className="right-container__text">Корзина</span>
                     </a>
 
-                    {user.isAdmin ?
+                    {user.user.role === 'admin' ?
                         <a className="right-container__item admin" onClick={() => history(ADMIN_ROUTE)}>
                             <span className="right-container__text">Админ панель</span>
                         </a>

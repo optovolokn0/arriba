@@ -1,12 +1,18 @@
+import { useContext, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import Modal from 'react-bootstrap/Modal'
+import { Context } from '../../main'
 
 interface modalProps {
     show: boolean,
-    onHide (): void 
+    onHide(): void
 }
 
-const CreateCategory = ({ show, onHide } : modalProps) => {
+const CreateCategory = ({ show, onHide }: modalProps) => {
+
+    const { product } = useContext(Context)!
+    const [category, setCategory] = useState<string>('')
+
     return (
         <Modal
             show={show}
@@ -21,12 +27,16 @@ const CreateCategory = ({ show, onHide } : modalProps) => {
             </Modal.Header>
             <Modal.Body>
                 <form >
-                    <input type="text" placeholder='Введите название категории'/>
+                    <input onChange={(e) => setCategory(e.target.value)} value={category} type="text" placeholder='Введите название категории' />
                 </form>
             </Modal.Body>
             <Modal.Footer>
                 <Button onClick={onHide}>Закрыть</Button>
-                <Button onClick={onHide}>Добавить</Button>
+                <Button onClick={() => {
+                    product.createCategory(category)
+                    product.fetchCategories()
+                    onHide()
+                }}>Добавить</Button>
             </Modal.Footer>
         </Modal>
     )

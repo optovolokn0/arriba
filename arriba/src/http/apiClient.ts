@@ -14,13 +14,13 @@ const refreshAccessToken = async (): Promise<string | null> => {
     try {
         const response = await axios.post(
             `${API_BASE_URL}api/token/refresh/`,
-            {},
-            { withCredentials: true } // Refresh токен находится в cookies
+            { refresh: localStorage.getItem("refresh_token")}
         );
         const newAccessToken = response.data.access;
 
         // Сохраняем новый access токен
         localStorage.setItem("access_token", newAccessToken);
+        localStorage.setItem("refresh_token", response.data.refresh);
 
         return newAccessToken;
     } catch (error) {

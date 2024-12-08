@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
+import { Context } from "../../main";
 
 
 interface modalProps {
@@ -8,6 +9,10 @@ interface modalProps {
 }
 
 const CreateBrand = ({show, onHide} : modalProps) => {
+
+    const {product} = useContext(Context)!
+    const [brand, setBrand] = useState<string>('')
+
     return (
         <Modal
             show={show}
@@ -22,12 +27,16 @@ const CreateBrand = ({show, onHide} : modalProps) => {
             </Modal.Header>
             <Modal.Body>
                 <form >
-                    <input type="text" placeholder='Введите название бренда'/>
+                    <input onChange={(e) => setBrand(e.target.value)} value={brand} type="text" placeholder='Введите название бренда'/>
                 </form>
             </Modal.Body>
             <Modal.Footer>
                 <Button onClick={onHide}>Закрыть</Button>
-                <Button onClick={onHide}>Добавить</Button>
+                <Button onClick={() => {
+                    product.createBrand(brand)
+                    product.fetchBrands()
+                    onHide()
+                }}>Добавить</Button>
             </Modal.Footer>
         </Modal>
     )

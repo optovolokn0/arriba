@@ -40,7 +40,7 @@ const CreateProduct = observer(({show, onHide} : modalProps) => {
                         <Dropdown.Toggle>Выберите категорию</Dropdown.Toggle>
                         <Dropdown.Menu>
                             {product.categories.map((category) => 
-                                <Dropdown.Item key={category.id}>{category.name}</Dropdown.Item>
+                                <Dropdown.Item key={category.category_id}>{category.category_name}</Dropdown.Item>
                             )}
                         </Dropdown.Menu>
                     </Dropdown>
@@ -48,7 +48,7 @@ const CreateProduct = observer(({show, onHide} : modalProps) => {
                         <Dropdown.Toggle>Выберите бренд</Dropdown.Toggle>
                         <Dropdown.Menu>
                             {product.brands.map((brand) => 
-                                <Dropdown.Item key={brand.id}>{brand.name}</Dropdown.Item>
+                                <Dropdown.Item key={brand.brand_id}>{brand.brand_name}</Dropdown.Item>
                             )}
                         </Dropdown.Menu>
                     </Dropdown>

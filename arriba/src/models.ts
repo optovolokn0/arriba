@@ -14,13 +14,13 @@ export interface IInfo{
 }
 
 export interface IBrand{
-    id: number,
-    name: string
+    brand_id: number,
+    brand_name: string
 }
 
 export interface ICategory{
-    id: number,
-    name: string
+    category_id: number,
+    category_name: string
 }
 
 export interface IProductsList{
@@ -31,4 +31,12 @@ export interface IProductsList{
 export interface ICategoryPageProps {
     products: IProduct[],
     categories: ICategory[]
+}
+
+export interface IUser {
+    id: number,
+    name: string,
+    email: string,
+    role: string,
+    role_id: string
 }

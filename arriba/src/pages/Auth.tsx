@@ -15,12 +15,13 @@ const Auth = observer(() => {
     const [password, setPassword] = useState<string>('')
     const [password_confirm, setPasswordConfirm] = useState<string>('')
     const [isSeller, setIsSeller] = useState<boolean>(false)
+    const [activateLink, setActivateLink] = useState<string>('')
 
     const handleRegister = async () => {
         try {
             const role = isSeller ? "12" : "11"
-            await user.registration(name, email, password, password_confirm, role)
-            alert("Регистрация успешна!")
+            const link = await user.registration(name, email, password, password_confirm, role)
+            setActivateLink(link)
         } catch (e) {
             console.error("Ошибка при регистрации:", e)
         }
@@ -29,7 +30,6 @@ const Auth = observer(() => {
     const handleLogin = async () => {
         try {
             await user.login(email, password)
-            alert("Авторизация успешна!")
         } catch (e) {
             console.error("Ошибка при авторизации:", e)
         }
@@ -66,6 +66,7 @@ const Auth = observer(() => {
                         <input onChange={e => setEmail(e.target.value)} value={email} className="auth__input" type="text" placeholder="Введите email" />
                         <input onChange={e => setPassword(e.target.value)} value={password} className="auth__input" type="password" placeholder="Введите пароль" />
                         <input onChange={e => setPasswordConfirm(e.target.value)} value={password_confirm} className="auth__input" type="password" placeholder="Повторите пароль" />
+                        {activateLink && <a href={activateLink} target={activateLink} >Ссылка</a>}
                         <label>
                             <input type="checkbox" checked={isSeller} onChange={(e) => setIsSeller(e.target.checked)} />
                             Зарегистрироваться как продавец
