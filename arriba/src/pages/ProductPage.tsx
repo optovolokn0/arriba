@@ -10,17 +10,17 @@ function ProductPage() {
             {
                 selectedProd ? (
                     <div className="product-page__container">
-                        <img className="product-page__img" src={selectedProd.photo} alt="" />
+                        {/* <img className="product-page__img" src={selectedProd.photo} alt="" /> */}
                         <div className="product-page__text-container">
-                            <h2 className="product-page__title">{selectedProd.name}</h2>
-                            {selectedProd.description.map(info =>
+                            <h2 className="product-page__title">{selectedProd.product_name}</h2>
+                            {selectedProd.characteristics.map(info =>
                                 <span key={info.id} className="product-page__descr">
-                                    {info.title}: {info.descr}
+                                    {info.name}: {info.value}
                                 </span>
                             )}
                         </div>
                         <div className="product-page__bts-container">
-                            <span className="product-page__price">{selectedProd.price} P.</span>
+                            <span className="product-page__price">{selectedProd.product_price} P.</span>
                             <button onClick={() => product.addToBasket(selectedProd)} className="btn add-to-basket-btn">Добавить в корзину</button>
                         </div>
                     </div>

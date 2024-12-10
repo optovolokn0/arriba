@@ -26,10 +26,10 @@ const ProductItem = observer((item: ProductProps) => {
                 history(PRODUCT_ROUTE + '/' + item.productItem.id)
             }}>
 
-                <img className="product__img" src={item.productItem.photo} alt={item.productItem.name} />
+                {/* <img className="product__img" src={item.productItem.photo} alt={item.productItem.name} /> */}
                 <div className="product__textbox">
-                    <span>{item.productItem.price} ₽</span>
-                    <span>{item.productItem.name}</span>
+                    <span>{item.productItem.product_price} ₽</span>
+                    <span>{item.productItem.product_name}</span>
                 </div>
                 <div className="product__descr-box">
                     <div className="product__rat-box">

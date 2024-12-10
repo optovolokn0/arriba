@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx"
 import { IBrand, ICategory, IProduct } from "../models"
-import { createBrandData, createCategoryData, fetchBrandsData, fetchCategoriesData } from "../http/services/productService"
+import { createBrandData, createCategoryData, createProductData, deleteBrandsData, deleteCategoriesData, deleteProductData, fetchBrandsData, fetchCategoriesData, fetchProductsData } from "../http/services/productService"
 
 export default class ProductStore {
     _categories: ICategory[]
@@ -167,6 +167,23 @@ export default class ProductStore {
         }
     }
 
+    async createCategory(name: string){
+        try {
+            await createCategoryData(name);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async deleteCategory(id: number){
+        try {
+            await deleteCategoriesData(id)
+            this.fetchCategories()
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     async fetchBrands(){
         try {
             const response = await fetchBrandsData();
@@ -177,14 +194,6 @@ export default class ProductStore {
     }
 
 
-    async createCategory(name: string){
-        try {
-            await createCategoryData(name);
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
     async createBrand(name: string){
         try {
             await createBrandData(name);
@@ -192,4 +201,56 @@ export default class ProductStore {
             console.error(e);
         }
     }
+
+    async deleteBrand(id: number){
+        try {
+            await deleteBrandsData(id)
+            this.fetchBrands()
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    async fetchProducts(){
+        try {
+            const response = await fetchProductsData();
+            this.setProducts(response.data);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async createProduct(name: string, price: string, descr: string, characteristics: [], seller_id: number, brand_id: number, category_id: number){
+        try {
+            const data = await createProductData(name, price, descr, characteristics, seller_id, brand_id, category_id);
+            return data
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async deleteProduct(id: number){
+        try {
+            await deleteProductData(id)
+            this.fetchProducts()
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    // async createCharacteristic(name: string){
+    //     try {
+    //         await createCharacteristicData(name);
+    //     } catch (e) {
+    //         console.error(e);
+    //     }
+    // }
+
+    // async deleteCharacteristic(id: number){
+    //     try {
+    //         await deleteCharacteristicData(id);
+    //     } catch (e) {
+    //         console.log(e)
+    //     }
+    // }
 }

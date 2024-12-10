@@ -15,9 +15,16 @@
         gap: 10px;
         font-size: 26px;
         font-weight: 600;
+
+        .btn-container{
+            display: flex;
+            gap: 10px;
+        }
     }
 
     &__item{
+        display: flex;
+        justify-content: space-between;
         font-weight: normal;
     }
 

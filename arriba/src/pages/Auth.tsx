@@ -1,13 +1,15 @@
 import React, { useContext, useState } from "react";
-import { LOGIN_ROUTE, REGISTRATION_ROUTE } from "../utils/consts";
-import { useLocation } from "react-router-dom";
+import { ADMIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, SELLER_ROUTE, SHOP_ROUTE } from "../utils/consts";
+import { useLocation, useNavigate } from "react-router-dom";
 import bg from '../../public/bg-auth.png'
 import { Context } from "../main";
 import { observer } from "mobx-react-lite";
+import ConfirmEmail from "../components/modals/ConfirmEmail";
 
 const Auth = observer(() => {
     const location = useLocation()
     const { user } = useContext(Context)!
+    const history = useNavigate()
     const isLogin = location.pathname === LOGIN_ROUTE
 
     const [name, setName] = useState<string>('')
@@ -17,11 +19,14 @@ const Auth = observer(() => {
     const [isSeller, setIsSeller] = useState<boolean>(false)
     const [activateLink, setActivateLink] = useState<string>('')
 
+    const [confirmVisible, setConfirmVisible] = useState(false)
+
     const handleRegister = async () => {
         try {
             const role = isSeller ? "12" : "11"
-            const link = await user.registration(name, email, password, password_confirm, role)
-            setActivateLink(link)
+            const data = await user.registration(name, email, password, password_confirm, role)
+            setActivateLink(data.activation_link)
+            setConfirmVisible(true)
         } catch (e) {
             console.error("Ошибка при регистрации:", e)
         }
@@ -29,7 +34,10 @@ const Auth = observer(() => {
 
     const handleLogin = async () => {
         try {
-            await user.login(email, password)
+            const response = await user.login(email, password)
+            if (response.role === 'admin') history(ADMIN_ROUTE)
+            else if (response.role === 'seller') history(SELLER_ROUTE)
+            else history(SHOP_ROUTE)
         } catch (e) {
             console.error("Ошибка при авторизации:", e)
         }
@@ -43,6 +51,7 @@ const Auth = observer(() => {
             </div>
 
             <div className="auth__container">
+                <ConfirmEmail show={confirmVisible} onHide={()=>setConfirmVisible(false)} link={activateLink}/>
 
                 {isLogin ?
                     <form action="POST" className="auth__form">
@@ -66,7 +75,6 @@ const Auth = observer(() => {
                         <input onChange={e => setEmail(e.target.value)} value={email} className="auth__input" type="text" placeholder="Введите email" />
                         <input onChange={e => setPassword(e.target.value)} value={password} className="auth__input" type="password" placeholder="Введите пароль" />
                         <input onChange={e => setPasswordConfirm(e.target.value)} value={password_confirm} className="auth__input" type="password" placeholder="Повторите пароль" />
-                        {activateLink && <a href={activateLink} target={activateLink} >Ссылка</a>}
                         <label>
                             <input type="checkbox" checked={isSeller} onChange={(e) => setIsSeller(e.target.checked)} />
                             Зарегистрироваться как продавец

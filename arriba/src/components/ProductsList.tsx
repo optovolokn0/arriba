@@ -6,7 +6,7 @@ import ProductItem from "./ProductItem";
 const ProductsList = observer(() => {
     const { product } = useContext(Context)!
 
-    const filteredProducts = product.products.filter((prod) => prod.category_id === product.selectedCategory)
+    const filteredProducts = product.products.filter((prod) => prod.category === product.selectedCategory)
     return (
         <ul className="products-list">
             {filteredProducts.length > 0 ?
@@ -15,7 +15,6 @@ const ProductsList = observer(() => {
                 )))
                 :
                 (
-                    // <span>Товары этой категории не найдены. Посмотрите другие товары</span>
                     product.products.map(item => (
                         <ProductItem key={item.id} productItem={item} />
                     ))

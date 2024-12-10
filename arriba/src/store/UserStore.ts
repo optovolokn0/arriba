@@ -42,12 +42,9 @@ export default class UserStore{
     async registration(name: string, email: string, password: string, password_confirm: string, role: string) {
         try {
             const response = await registerUser(name, email, password, password_confirm, role);
-            console.log(response)
             this.setIsAuth(true)
 
-            this.getUserInfo()
-
-            return response.data.activation_link
+            return response.data
         } catch (e) {
             console.log(e);
         }
@@ -55,11 +52,10 @@ export default class UserStore{
 
     async login(email: string, password: string) {
         try {
-            const response = await loginUser(email, password);
-            console.log(response)
+            await loginUser(email, password);
             this.setIsAuth(true)
 
-            this.getUserInfo()
+            return this.getUserInfo()
 
         } catch (e) {
             console.log(e)
@@ -69,13 +65,11 @@ export default class UserStore{
     async checkAuth() {
         try {
             const response = await apiClient.post(`api/token/refresh/`, { refresh: localStorage.getItem("refresh_token")})
-            console.log(response);
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
             this.setIsAuth(true);
 
-            this.getUserInfo()
-            
+            return this.getUserInfo()
         } catch (e) {
             console.log(e);
         }
@@ -83,6 +77,7 @@ export default class UserStore{
 
     async getUserInfo() {
         const profileResponse = await apiClient.get('api/profile/')
-        this.setUser(profileResponse.data)
+        this.setUser(profileResponse.data)      
+        return profileResponse.data
     }
 }

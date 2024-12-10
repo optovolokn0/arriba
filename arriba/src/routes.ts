@@ -6,7 +6,8 @@ import Shop from "./pages/Shop"
 import Favorites from "./pages/Favorites"
 import Account from "./pages/Account"
 import Orders from "./pages/Orders"
-import { ADMIN_ROUTE, BASKET_ROUTE, LOGIN_ROUTE, PRODUCT_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE, FAVORITES_ROUTE, ACCOUNT_ROUTE, ORDERS_ROUTE } from "./utils/consts"
+import { ADMIN_ROUTE, BASKET_ROUTE, LOGIN_ROUTE, PRODUCT_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE, FAVORITES_ROUTE, ACCOUNT_ROUTE, ORDERS_ROUTE, SELLER_ROUTE } from "./utils/consts"
+import Seller from "./pages/Seller"
 
 
 export const authRoutes = [
@@ -25,6 +26,10 @@ export const authRoutes = [
     {
         path: ORDERS_ROUTE,
         Component: Orders
+    },
+    {
+        path: SELLER_ROUTE,
+        Component: Seller
     }
 ]
 

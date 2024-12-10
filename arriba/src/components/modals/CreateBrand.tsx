@@ -32,9 +32,9 @@ const CreateBrand = ({show, onHide} : modalProps) => {
             </Modal.Body>
             <Modal.Footer>
                 <Button onClick={onHide}>Закрыть</Button>
-                <Button onClick={() => {
-                    product.createBrand(brand)
-                    product.fetchBrands()
+                <Button onClick={async () => {
+                    await product.createBrand(brand)
+                    await product.fetchBrands()
                     onHide()
                 }}>Добавить</Button>
             </Modal.Footer>

@@ -1,16 +1,19 @@
 export interface IProduct{
     id: number,
-    name: string,
-    photo: string,
-    price: number,
-    category_id: number,
-    description: IInfo[]
+    product_id: number,
+    product_name: string,
+    product_price: number,
+    product_description: string,
+    characteristics: ICharacteristics[],
+    category: number,
+    brand: number,
+    seller: number,
 }
 
-export interface IInfo{
+export interface ICharacteristics{
     id: number,
-    title: string,
-    descr: string
+    name: string,
+    value: string
 }
 
 export interface IBrand{

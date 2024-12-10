@@ -34,13 +34,14 @@ const Account = observer(() => {
             <div className="account__info">
                 <div className="account__personal-box">
                     <img src={avatar} alt="avatar" />
-                    <div className="account__name">{user.user.role}</div>
+                    <span className="account__name">Имя: {user.user.name}</span>
+                    <span className="account__role">Роль: {user.user.role}</span>
                 </div>
 
                 <nav className="account__nav">
                     <button onClick={() => setActiveComponent('settings')} className="btn account__btn">Настройки аккаунта</button>
-                    <button onClick={() => history(ORDERS_ROUTE)} className="btn account__btn">Мои заказы</button>
-                    <button onClick={() => history(BASKET_ROUTE)} className="btn account__btn">Корзина</button>
+                    {user.user.role === 'client' && <button onClick={() => history(ORDERS_ROUTE)} className="btn account__btn">Мои заказы</button>}        
+                    {user.user.role === 'client' && <button onClick={() => history(BASKET_ROUTE)} className="btn account__btn">Корзина</button>}
                     <button onClick={() => setActiveComponent('support')} className="btn account__btn">Поддержка</button>
                     <button onClick={() => exitFromAccount()} className="btn account__btn account__btn_exit">Выйти</button>
                 </nav>

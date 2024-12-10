@@ -1,26 +1,72 @@
 import React, { useContext, useState } from "react";
 import { Button, Dropdown, Modal } from "react-bootstrap";
 import { Context } from "../../main";
-import { IInfo } from "../../models";
 import { observer } from "mobx-react-lite";
+import { createCharacteristic } from "../../http/services/productService";
 
 
 interface modalProps {
     show: boolean,
-    onHide (): void 
+    onHide(): void
 }
 
-const CreateProduct = observer(({show, onHide} : modalProps) => {
-    const { product } = useContext(Context)!
-    const [info, setInfo] = useState<IInfo[]>([])
+interface characteristicProps {
+    name: string,
+    value: string,
+    char_id: number
+}
 
-    const addInfo = () => {
-        setInfo([...info, {title: '', descr: '', id: Date.now()}])
+const CreateProduct = observer(({ show, onHide }: modalProps) => {
+    const { user, product } = useContext(Context)!
+    const [name, setName] = useState<string>('')
+    const [price, setPrice] = useState<string>('')
+    const [descr, setDescr] = useState<string>('')
+    const [category, setCategory] = useState<number>(NaN)
+    const [brand, setBrand] = useState<number>(NaN)
+    const [characteristics, setCharacteristics] = useState<characteristicProps[]>([])
+
+    const addCharacteristic = () => {
+        //эта функция к предыдущим характеристикам добавляет еще одно
+        setCharacteristics([...characteristics, { name: '', value: '', char_id: Date.now() }])
     }
 
-    const removeInfo = (id: number) => {
-        setInfo(info.filter(i => i.id !== id))
+    const removeCharacteristic = (id: number) => {
+        setCharacteristics(characteristics.filter(i => i.char_id !== id))
     }
+
+    const updateCharacteristic = (id: number, key: "name" | "value", value: string) => {
+        setCharacteristics(
+            characteristics.map((c) =>
+                c.char_id === id ? { ...c, [key]: value } : c
+            )
+        );
+    };
+
+    const handleSubmit = async () => {
+        try {
+            //Создаем товар
+            const productResponse = await product.createProduct(name, price, descr, [], user.user.id, brand, category)
+
+
+            const createdProductId = productResponse?.data.id
+
+            //Отправляем характеристики
+            await Promise.all(
+                characteristics.map((char) =>
+                    createCharacteristic(createdProductId, {
+                        name: char.name,
+                        value: char.value,
+                    })
+                )
+            );
+
+
+            onHide()
+        } catch (error) {
+            console.error('Ошибка при добавлении товара и характеристик', error);
+        }
+    };
+
 
     return (
         <Modal
@@ -36,42 +82,42 @@ const CreateProduct = observer(({show, onHide} : modalProps) => {
             </Modal.Header>
             <Modal.Body>
                 <form className="modal__form">
-                    <Dropdown className="mt-2 mb-2">
+                    <Dropdown className="mt-2 mb-2" onSelect={(eventKey) => setCategory(eventKey ? parseInt(eventKey) : NaN)}>
                         <Dropdown.Toggle>Выберите категорию</Dropdown.Toggle>
                         <Dropdown.Menu>
-                            {product.categories.map((category) => 
-                                <Dropdown.Item key={category.category_id}>{category.category_name}</Dropdown.Item>
+                            {product.categories.map((category) =>
+                                <Dropdown.Item key={category.category_id} eventKey={category.category_id}>{category.category_name}</Dropdown.Item>
                             )}
                         </Dropdown.Menu>
                     </Dropdown>
-                    <Dropdown className="mt-2 mb-2">
+                    <Dropdown className="mt-2 mb-2" onSelect={((eventKey) => setBrand(eventKey ? parseInt(eventKey) : NaN))}>
                         <Dropdown.Toggle>Выберите бренд</Dropdown.Toggle>
                         <Dropdown.Menu>
-                            {product.brands.map((brand) => 
-                                <Dropdown.Item key={brand.brand_id}>{brand.brand_name}</Dropdown.Item>
+                            {product.brands.map((brand) =>
+                                <Dropdown.Item key={brand.brand_id} eventKey={brand.brand_id}>{brand.brand_name}</Dropdown.Item>
                             )}
                         </Dropdown.Menu>
                     </Dropdown>
-                    <input className="modal__input mt-3" type="text" placeholder="Введите название товара"/>
-                    <input className="modal__input mt-3" type="number" placeholder="Введите стоимость товара" />
-                    <input className="mt-3" type="file"/>
-                    <hr/>
-                    <Button onClick={addInfo}>Добавить новое свойство</Button>
+                    <input className="modal__input mt-3" value={name} onChange={e => setName(e.target.value)} type="text" placeholder="Введите название товара" />
+                    <input className="modal__input mt-3" value={price} onChange={e => setPrice(e.target.value)} type="number" placeholder="Введите стоимость товара" />
+                    <input className="modal__input mt-3" value={descr} onChange={e => setDescr(e.target.value)} type="text" placeholder="Введите описание товара" />
+                    <input className="mt-3" type="file" />
+                    <hr />
+                    <Button onClick={addCharacteristic}>Добавить новое свойство</Button>
                     {
-                        info.map(i => 
-                            <div className="info__container" key={i.id}>
-                                <input className="modal__input" type="text" placeholder="Введите название свойства"/>
-                                <input className="modal__input" type="text" placeholder="Введите описание свойства"/>
-                                <button className="btn info__btn" onClick={() => removeInfo(i.id)}>Удалить</button>
+                        characteristics.map(char =>
+                            <div className="characteristic__container" key={char.char_id}>
+                                <input className="modal__input" type="text" value={char.name} onChange={e => updateCharacteristic(char.char_id, "name", e.target.value)} placeholder="Введите название свойства" />
+                                <input className="modal__input" type="text" value={char.value} onChange={e => updateCharacteristic(char.char_id, "value", e.target.value)} placeholder="Введите описание свойства" />
+                                <button className="btn characteristic__btn" onClick={() => removeCharacteristic(char.char_id)}>Удалить</button>
                             </div>
-                            
                         )
                     }
                 </form>
             </Modal.Body>
             <Modal.Footer>
                 <Button onClick={onHide}>Закрыть</Button>
-                <Button onClick={onHide}>Добавить</Button>
+                <Button onClick={handleSubmit}>Добавить</Button>
             </Modal.Footer>
         </Modal>
     )

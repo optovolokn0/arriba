@@ -5,6 +5,7 @@ import './styles/css/fonts.css'
 import { createContext } from 'react'
 import UserStore from './store/UserStore.ts'
 import ProductStore from './store/ProductStore.ts'
+import { BrowserRouter } from 'react-router-dom'
 
 interface ContextType {
     user: UserStore;
@@ -16,7 +17,10 @@ createRoot(document.getElementById('root')!).render(
     <Context.Provider value={{
         user: new UserStore(),
         product: new ProductStore()
-        }}>    
-        <App />
+    }}>
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
+
     </Context.Provider>
 )

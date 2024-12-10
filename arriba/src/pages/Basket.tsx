@@ -15,7 +15,7 @@ const Basket = observer(() => {
                 ) : (
                     <ul className="basket__list">
                         {product.basket.map((item) => (
-                            <BasketItem basketItem={item}/>
+                            <BasketItem key={item.id} basketItem={item}/>
                         ))}
                     </ul>
                 )}

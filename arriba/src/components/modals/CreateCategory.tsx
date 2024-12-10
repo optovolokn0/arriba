@@ -32,9 +32,9 @@ const CreateCategory = ({ show, onHide }: modalProps) => {
             </Modal.Body>
             <Modal.Footer>
                 <Button onClick={onHide}>Закрыть</Button>
-                <Button onClick={() => {
-                    product.createCategory(category)
-                    product.fetchCategories()
+                <Button onClick={async () => {
+                    await product.createCategory(category)
+                    await product.fetchCategories()
                     onHide()
                 }}>Добавить</Button>
             </Modal.Footer>
