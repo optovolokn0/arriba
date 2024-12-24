@@ -28,6 +28,11 @@ function App() {
 			product.fetchBrands()
 			product.fetchCategories()
 			product.fetchProducts()
+			try {
+				product.fetchBasket(user.user.id)
+			} catch {
+				product.createBasket(user.user.id)
+			}
 		}
 		initialize()
 	}, [])

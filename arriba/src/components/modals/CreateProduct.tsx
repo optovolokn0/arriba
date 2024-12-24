@@ -3,6 +3,7 @@ import { Button, Dropdown, Modal } from "react-bootstrap";
 import { Context } from "../../main";
 import { observer } from "mobx-react-lite";
 import { createCharacteristic } from "../../http/services/productService";
+import apiClient from "../../http/apiClient";
 
 
 interface modalProps {
@@ -24,6 +25,7 @@ const CreateProduct = observer(({ show, onHide }: modalProps) => {
     const [category, setCategory] = useState<number>(NaN)
     const [brand, setBrand] = useState<number>(NaN)
     const [characteristics, setCharacteristics] = useState<characteristicProps[]>([])
+    const [file, setFile] = useState<File>()
 
     const addCharacteristic = () => {
         //эта функция к предыдущим характеристикам добавляет еще одно
@@ -42,13 +44,17 @@ const CreateProduct = observer(({ show, onHide }: modalProps) => {
         );
     };
 
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files.length > 0) {
+            setFile(event.target.files[0]); // Сохраняем выбранный файл в состоянии
+        }
+    };
+
     const handleSubmit = async () => {
         try {
             //Создаем товар
             const productResponse = await product.createProduct(name, price, descr, [], user.user.id, brand, category)
-
-
-            const createdProductId = productResponse?.data.id
+            const createdProductId: number = productResponse?.data.id
 
             //Отправляем характеристики
             await Promise.all(
@@ -60,12 +66,29 @@ const CreateProduct = observer(({ show, onHide }: modalProps) => {
                 )
             );
 
+            if (!file) {
+                return
+            }
+            const formData = new FormData();
+            formData.append("image", file);
 
+            try {
+                await apiClient.post(`/api/products/${createdProductId}/add_image/`, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                })
+            } catch (error) {
+                console.error(error);
+            }
+
+            product.fetchProducts()
             onHide()
         } catch (error) {
             console.error('Ошибка при добавлении товара и характеристик', error);
         }
     };
+
 
 
     return (
@@ -101,9 +124,9 @@ const CreateProduct = observer(({ show, onHide }: modalProps) => {
                     <input className="modal__input mt-3" value={name} onChange={e => setName(e.target.value)} type="text" placeholder="Введите название товара" />
                     <input className="modal__input mt-3" value={price} onChange={e => setPrice(e.target.value)} type="number" placeholder="Введите стоимость товара" />
                     <input className="modal__input mt-3" value={descr} onChange={e => setDescr(e.target.value)} type="text" placeholder="Введите описание товара" />
-                    <input className="mt-3" type="file" />
+                    <input className="mt-3" type="file" onChange={handleFileChange} />
                     <hr />
-                    <Button onClick={addCharacteristic}>Добавить новое свойство</Button>
+                    <Button onClick={addCharacteristic}>Добавить новую характеристику</Button>
                     {
                         characteristics.map(char =>
                             <div className="characteristic__container" key={char.char_id}>

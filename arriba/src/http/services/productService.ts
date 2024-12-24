@@ -1,4 +1,5 @@
 
+import { IProduct } from "../../models";
 import apiClient from "../apiClient";
 
 //категории
@@ -33,11 +34,34 @@ export const deleteBrandsData = async (id: number) => {
     return await apiClient.delete(`api/brands/${id}/`)
 }
 
+//корзина
+
+export const createBasketData = async (userId: number) => {
+    return await apiClient.post(`api/basket/`, {user: userId})
+} 
+
+export const fetchUserBasketData = async (userId: number)=> {
+    return await apiClient.get(`api/basket/user/${userId}/`)
+}
+
+export const addToUserBasketData = async (userId: number, productId: number | undefined, _quantity: number) => {
+    return await apiClient.post(`api/basket/user/${userId}/`, {product_id: productId, quantity: _quantity})
+}
+
+export const deleteFromBasketData = async (userId: number, productId: number) => {
+    return await apiClient.delete(`api/basket/user/${userId}/`, {data: {product_id: productId}})
+}
+
 //товары
 
 export const fetchProductsData = async () => {
     const data = await apiClient.get(`api/products/`)
     return data
+}
+
+export const fetchProduct = async (productId: number): Promise<IProduct> => {
+    const response = await apiClient.get(`api/products/${productId}/`)
+    return response.data
 }
 
 export const createProductData = async (name: string, price: string, descr: string, characteristics: [], seller_id: number, brand_id: number, category_id: number)=>{
@@ -58,7 +82,18 @@ export const deleteProductData = async (id: number) => {
     return await apiClient.delete(`api/products/${id}/`)
 }
 
+//характеристики
 
 export const createCharacteristic = async (id: number, characteristic: { name: string; value: string }) => {
     return await apiClient.post(`api/products/${id}/add_characteristic/`, { name: characteristic.name, value: characteristic.value})
+}
+
+//отзывы
+
+export const fetchProductReviews = async (product_id: number) => {
+    return await apiClient.get(`api/reviews/${product_id}/`)
+}
+
+export const addProductReview = async (product_id: number) => {
+    return await apiClient.post(`api/reviews/${product_id}/`)
 }

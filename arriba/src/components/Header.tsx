@@ -11,14 +11,15 @@ const Header = observer(() => {
     const { user } = useContext(Context)!
     const history = useNavigate()
 
-    const [isCategoriesBarVisible, setIsCategoriesBarVisible] = useState(false);
+    const [isCategoriesBarVisible, setIsCategoriesBarVisible] = useState(false)
 
     const toggleCategoriesBar = () => {
-        setIsCategoriesBarVisible((prev) => !prev);
+        history(SHOP_ROUTE)
+        setIsCategoriesBarVisible((prev) => !prev)
     };
 
     const closeCategoriesBar = () => {
-        setIsCategoriesBarVisible(false);
+        setIsCategoriesBarVisible(false)
     };
 
     return (

@@ -5,9 +5,16 @@ export interface IProduct{
     product_price: number,
     product_description: string,
     characteristics: ICharacteristics[],
+    images: IImage[],
     category: number,
     brand: number,
     seller: number,
+}
+
+export interface IImage{
+    id: number,
+    image: string,
+    product: number
 }
 
 export interface ICharacteristics{
@@ -42,4 +49,16 @@ export interface IUser {
     email: string,
     role: string,
     role_id: string
+}
+
+export interface IBasket {
+    id: number,
+    user: number,
+    products: IBasketProduct[]
+}
+
+export interface IBasketProduct {
+    product: number,
+    product_name: string,
+    quantity: number
 }

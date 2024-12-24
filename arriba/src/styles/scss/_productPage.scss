@@ -1,33 +1,142 @@
 .product-page {
+    padding: 25px;
 
     &__container {
         display: flex;
-        gap: 30px;
+        justify-content: space-between;
+    }
+
+    &__container_left{
+        width: 33%;
+
+        .img{
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+
+    &__container_center{
+        width: 33%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .title {
+            font-size: 26px;
+            font-weight: 600;
+        }
+
+        .info-box{
+            display: flex;
+            gap: 10px;
+        }
+
+        .rat-box{
+            display: flex;
+            gap: 5px;
+        }
+
+        .rat-img{
+            width: 20px;
+            height: 20px;
+        }
+
+        .review-box{
+            display: flex;
+            gap: 5px;
+        }
+
+        .review-img{
+            width: 20px;
+            height: 20px;
+        }
+
+        .about{
+            font-size: 26px;
+            font-weight: 600;
+        }
+
+        .about-elem{
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid black;
+            font-size: 20px;
+            font-weight: normal;
+        }
+    }
+
+    &__container_right{
+        width: 33%;
         align-items: center;
-    }
-
-
-    &__title {
-        font-size: 26px;
-        font-weight: 600;
-    }
-
-    &__bts-container {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 50px;
+
+        .buy-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 20px;
+            align-items: center;
+            background-color: #F8EABD;
+            border-radius: 10px;
+
+            .price {
+                font-size: 26px;
+                font-weight: 600;
+            }    
+
+            .add-to-basket-btn{
+                width: 300px;
+            }
+        }
+
+        
+        .delivery{
+            font-size: 26px;
+            font-weight: 500;
+
+            &__container{
+                padding: 20px;
+                background-color: #F8EABD;
+                border-radius: 10px;
+            }
+
+            &__address{
+                font-size: 20px;
+                font-weight: normal;
+            }
+
+            .ways-to-get{
+                display: flex;
+                gap: 3px;
+                font-size: 20px;
+                font-weight: normal;
+            }
+
+            .ways-to-get-btn{
+                border: 1px solid black;
+            }
+        }
     }
 
-    &__text-container {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
+   
+
+    &__descr-container{
+        .title{
+            text-align: left;
+            font-size: 24px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .text{
+            font-size: 20px;
+        }
     }
 
-    &__price {
-        font-size: 20px;
-        font-weight: 500;
-    }
+    
 }
 
 

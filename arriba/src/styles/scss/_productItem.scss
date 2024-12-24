@@ -14,16 +14,16 @@
 .product{
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     position: relative;
     flex: 0 0 calc((100% - 80px) / 6);
     padding: 5px;
     border: rgba($color: #000000, $alpha: 0.2) solid 1px;
 
     &__container{
+        height: 100%;
         display: flex;
         flex-direction: column;
-        
-        padding: 10px;
         justify-content: space-between;
         cursor: pointer;
     }
@@ -33,21 +33,13 @@
         position: absolute;
         top: 5px;
         right: 5px;
-        fill: rgba($color: #000000, $alpha: 0.01);
         z-index: 1;
-    }
-
-    &__like-svg{
-        &:hover,
-        &:active,
-        &:focus{
-            fill:rgb(227, 79, 99);
-        }
-        
-    }
+    }   
 
     &__img{
-        width: 100%;
+        object-fit: contain;
+        width: 200px;
+        height:200px;
     }
 
     &__textbox{
