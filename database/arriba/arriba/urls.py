@@ -41,11 +41,15 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('store.urls')),
-    path('api/token/', TokenObtainPairView.as_view()),
+    path('api/token/', views.CustomTokenObtainPairView.as_view()),
     path('api/token/refresh/', TokenRefreshView.as_view()),
     path('api/register/', views.RegisterUserView.as_view()),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0)),
     path('api/verify-email/<uuid:token>/', views.VerifyEmailView.as_view()),
     path('api/reset-password/', views.PasswordResetRequestView.as_view()),
     path('api/reset-password-confirm/<uuid:token>/', views.PasswordResetConfirmView.as_view()),
+    path('api/logout/', views.LogoutView.as_view()),
+    path('api/profile/', views.UserProfileView.as_view()),
+    path('api/basket/payment/', views.BasketPaymentView.as_view()),
+    path('api/payments/webhook/', views.PaymentWebhookView.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
