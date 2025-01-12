@@ -2,7 +2,7 @@ import { observer } from "mobx-react-lite";
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../main";
 import BasketItem from "../components/BasketItem";
-import { fetchProduct } from "../http/services/productService";
+import { fetchProduct, payBasket } from "../http/services/productService";
 import { IProduct } from "../models";
 
 
@@ -39,33 +39,51 @@ const Basket = observer(() => {
         return <div>Загрузка корзины...</div>;
     }
 
+    const handlePay = async () => {
+        try {
+            const response = await payBasket()
+            window.open(response.confirmation_url, '_blank')
+        } catch (error) {
+            console.error('Ошибка при оплате:', error)
+        }
+    }
 
+    let totalPrice: number = 0
+    basketProducts.map((item) => {
+        const basketItem = product.basket.products.find(
+            (bItem) => bItem.product === item.id)
+        totalPrice += Number(item.product_price * (basketItem ? basketItem.quantity : 1))
+    }
 
+    )
     return (
         <div className="basket">
             <div className="basket__title">Корзина</div>
             <div className="basket__container">
                 {product.basket.products.length === 0 ? (
                     <p>Корзина пуста</p>
-                ) 
-                : 
-                (
-                    <ul className="basket__list">
-                        {basketProducts.map((item) => {
-                            const basketItem = product.basket.products.find(
-                                (bItem) => bItem.product === item.id)
-                            return (
-                                <BasketItem key={basketItem?.product} basketItem={item} quantity={basketItem?.quantity || 1 } />
-                            )
+                )
+                    :
+                    (
+                        <ul className="basket__list">
+                            {basketProducts.map((item) => {
+                                const basketItem = product.basket.products.find(
+                                    (bItem) => bItem.product === item.id)
+                                return (
+                                    <BasketItem key={basketItem?.product} basketItem={item} quantity={basketItem?.quantity || 1} />
+                                )
                             }
-                        )}
-                    </ul>
-                )}
+                            )}
+                        </ul>
+                    )}
                 <div className="payment">
                     <div className="payment__container">
-                        <div className="payment__list"></div>
+                        <span className="payment__title">Итоговая сумма к оплате</span>
+                        <div className="payment__price">
+                            {totalPrice} рублей
+                        </div>
                     </div>
-                    <button className="btn payment__btn">Перейти к оформлению заказа</button>
+                    <button onClick={() => handlePay()} className="btn payment__btn">Перейти к оформлению заказа</button>
                 </div>
             </div>
         </div>

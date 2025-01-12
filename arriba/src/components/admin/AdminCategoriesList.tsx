@@ -14,8 +14,8 @@ const AdminCategoriesList = observer(() => {
                 {product.categories.map(item =>
                     <li key={item.category_id} className="admin__item">{item.category_name}
                         <div className="btn-container">
-                            <button className="btn change-btn">Изменить</button>
-                            <button onClick={() => product.deleteCategory(item.category_id)} className="btn delete-btn">Удалить</button>
+                            <button className="btn admin__btn-change">Изменить</button>
+                            <button onClick={() => product.deleteCategory(item.category_id)} className="btn admin__btn-delete">Удалить</button>
                         </div>
                     </li>
                 )}

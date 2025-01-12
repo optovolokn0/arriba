@@ -1,22 +1,26 @@
 import { makeAutoObservable } from "mobx"
-import { IBasket, IBrand, ICategory, IProduct } from "../models"
-import { createBasketData, createBrandData, createCategoryData, createProductData, deleteBrandsData, deleteCategoriesData, deleteProductData, fetchBrandsData, fetchCategoriesData, fetchProduct, fetchProductsData, fetchUserBasketData} from "../http/services/productService"
+import { IBasket, IBrand, ICategory, IOrder, IProduct } from "../models"
+import { createBasketData, createBrandData, createCategoryData, createProductData, deleteBrandsData, deleteCategoriesData, deleteProductData, fetchBrandsData, fetchCategoriesData, fetchOrdersData, fetchProduct, fetchProductsData, fetchUserBasketData} from "../http/services/productService"
 
 export default class ProductStore {
     _categories: ICategory[]
     _brands: IBrand[]
     _products: IProduct[]
     _selectedCategory: number
+    _searchedText: string
     _selectedProduct: number
     _basket: IBasket
+    _orders: IOrder[]
 
     constructor() {
         this._categories = []
         this._brands = []
         this._products = []
+        this._orders = []
         this._basket = {id: NaN, user: NaN, products: []}
         this._selectedCategory = NaN
         this._selectedProduct = NaN
+        this._searchedText = ''
 
         makeAutoObservable(this)
     }
@@ -40,9 +44,17 @@ export default class ProductStore {
     setSelectedProduct(productId: number) {
         this._selectedProduct = productId
     }
+    
+    setSearchedText (text: string) {
+        this._searchedText = text
+    }
 
     setBasket(basket: IBasket) {
         this._basket = basket
+    }
+
+    setOrders(orders: IOrder[]) {
+        this._orders = orders
     }
 
     get categories() {
@@ -65,8 +77,16 @@ export default class ProductStore {
         return this._selectedProduct
     }
 
+    get searchedText() {
+        return this._searchedText
+    }
+
     get basket() {
-        return this._basket;
+        return this._basket
+    }
+
+    get orders() {
+        return this._orders
     }
 
     async fetchCategories(){
@@ -174,4 +194,13 @@ export default class ProductStore {
             console.error(e);
         }
     } 
+
+    async fetchOrders(){
+        try {
+            const response = await fetchOrdersData();
+            this.setOrders(response.data);
+        } catch (e) {
+            console.error(e);
+        }
+    }
 }

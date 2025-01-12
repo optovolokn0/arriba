@@ -62,3 +62,25 @@ export interface IBasketProduct {
     product_name: string,
     quantity: number
 }
+
+export interface IPayResponse {
+    id: string,
+    status: string,
+    confirmation_url: string,
+    created_at: string
+}
+
+export interface IOrderItem {
+    product: number,
+    quantity: number,
+    price: string
+}
+
+export interface IOrder {
+    id: number,
+    status: string,
+    created_at: string,
+    updated_at: string,
+    total_price: string,
+    items: IOrderItem[]
+}

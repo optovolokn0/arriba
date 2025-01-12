@@ -1,7 +1,25 @@
 .payment{
+    display: flex;
+    flex-direction: column;
     padding: 20px;
     background-color: #EBE8E8;
     border-radius: 10px;
+
+    &__container{
+        // background-color: antiquewhite;
+    }
+
+    &__title{
+        font-size: 24px;
+        font-weight: 600;
+    }
+
+    &__price{
+        font-size: 20px;
+        margin-bottom: 30px;
+        padding: 5px;
+        // background-color: #5AC3B0;
+    }
 
     &__btn{
         padding: 5px;

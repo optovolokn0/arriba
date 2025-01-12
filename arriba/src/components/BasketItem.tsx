@@ -31,7 +31,7 @@ const BasketItem = (item: IBasketProductProps) => {
             })
             await product.fetchBasket(user.user.id);
         }
-        
+
     }
 
     const handleDeleteItem = async () => {
@@ -44,9 +44,12 @@ const BasketItem = (item: IBasketProductProps) => {
             <img className="basket-item__img" src={item.basketItem?.images[0]?.image} alt="" />
             <span className="basket-item__title">{item.basketItem.product_name}</span>
             <span className="basket-item__price">{item.basketItem.product_price} ₽</span>
-            <button onClick={() => handleAddQuantity()} className="btn">+</button>
-            <span>{item.quantity}</span>
-            <button onClick={() => handleReduceQuantity()} className="btn">-</button>
+            <div className="basket-item__quantity">
+                <button onClick={() => handleAddQuantity()} className="btn">+</button>
+                <span>{item.quantity}</span>
+                <button onClick={() => handleReduceQuantity()} className="btn">-</button>
+            </div>
+
             <button className="btn basket-item__delete-btn" onClick={() => handleDeleteItem()}>Удалить</button>
         </li>
     )

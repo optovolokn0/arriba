@@ -12,6 +12,7 @@
     }
 
     &__list{
+        width: 40%;
         display: flex;
         flex-direction: column;
         gap: 10px;
@@ -26,7 +27,10 @@
 
     &__item{
         display: flex;
+        padding: 5px;
         justify-content: space-between;
+        border: 1px solid black;
+        border-radius: 5px;
         font-weight: normal;
     }
 
@@ -45,6 +49,10 @@
 
     &__btn-delete{
         background-color: red;
+    }
+
+    &__btn-change{
+        background-color:aquamarine;
     }
 
     &__products-list{

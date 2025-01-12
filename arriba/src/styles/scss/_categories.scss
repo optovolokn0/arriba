@@ -9,6 +9,8 @@
         justify-content: center;
         align-items: center;
         gap: 5px;
+        font-size: 32px;
+        // font-weight: 900;
     }
 
     &__title {
@@ -25,7 +27,7 @@
     &__item:focus,
     &__item:hover,
     &__item:active {
-        color: #F7CD46;
+        color: white;
     }
 
     &__bar {
@@ -34,7 +36,7 @@
         left: -100%;
         width: 300px;
         height: 100%;
-        background-color: #fff;
+        background-color: #F7CD46;
         box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
         transition: left 0.3s ease;
         z-index: 1000;

@@ -7,6 +7,9 @@
   color: #000;
 }
 .header__logo {
+  display: flex;
+  gap: 5px;
+  align-items: center;
   color: #000;
 }
 .header__container {
@@ -267,6 +270,7 @@
   justify-content: center;
   align-items: center;
   gap: 5px;
+  font-size: 32px;
 }
 .categories__title {
   text-align: center;
@@ -278,7 +282,7 @@
   font-size: 20px;
 }
 .categories__item:focus, .categories__item:hover, .categories__item:active {
-  color: #F7CD46;
+  color: white;
 }
 .categories__bar {
   position: fixed;
@@ -286,7 +290,7 @@
   left: -100%;
   width: 300px;
   height: 100%;
-  background-color: #fff;
+  background-color: #F7CD46;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
   transition: left 0.3s ease;
   z-index: 1000;
@@ -339,8 +343,7 @@
   font-size: 20px;
 }
 .basket-item__img {
-  width: 100px;
-  height: 100px;
+  height: 120px;
 }
 .basket-item__delete-btn {
   padding: 5px;
@@ -348,11 +351,21 @@
   border-radius: 5px;
   background-color: #FF4310;
 }
-
 .payment {
+  display: flex;
+  flex-direction: column;
   padding: 20px;
   background-color: #EBE8E8;
   border-radius: 10px;
+}
+.payment__title {
+  font-size: 24px;
+  font-weight: 600;
+}
+.payment__price {
+  font-size: 20px;
+  margin-bottom: 30px;
+  padding: 5px;
 }
 .payment__btn {
   padding: 5px;
@@ -372,6 +385,7 @@
   align-items: start;
 }
 .admin__list {
+  width: 40%;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -384,7 +398,10 @@
 }
 .admin__item {
   display: flex;
+  padding: 5px;
   justify-content: space-between;
+  border: 1px solid black;
+  border-radius: 5px;
   font-weight: normal;
 }
 .admin__btns-container {
@@ -400,6 +417,9 @@
 }
 .admin__btn-delete {
   background-color: red;
+}
+.admin__btn-change {
+  background-color: aquamarine;
 }
 .admin__products-list {
   margin-right: 10px;
@@ -455,7 +475,7 @@
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 50px;
 }
 .products-list__title {
   font-size: 30px;
@@ -466,9 +486,7 @@
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-  flex: 0 0 calc((100% - 80px) / 6);
-  padding: 5px;
-  border: rgba(0, 0, 0, 0.2) solid 1px;
+  width: 200px;
 }
 .product__container {
   height: 100%;
@@ -486,8 +504,6 @@
 .product__img {
   -o-object-fit: contain;
      object-fit: contain;
-  width: 200px;
-  height: 200px;
 }
 .product__textbox {
   display: flex;
@@ -565,7 +581,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 20px;
 }
 .account__btn {
   font-size: 24px;
@@ -624,8 +640,84 @@
   background-color: aquamarine;
 }
 
+.footer {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #FFE89F;
+}
+.footer__logo {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.footer__logo span {
+  font-size: 16px;
+}
+.footer a {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: normal;
+  color: black;
+}
+.footer__nav-container {
+  display: flex;
+  align-items: center;
+  gap: 100px;
+}
+.footer__nav-container .nav-container-sub {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.orders__title {
+  text-align: center;
+  font-size: 30px;
+}
+.orders__container {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 20px;
+}
+.orders__item {
+  display: flex;
+  gap: 100px;
+  padding: 10px;
+  border-bottom: 1px solid black;
+}
+.orders__item-descr {
+  display: flex;
+  flex-direction: column;
+}
+.orders__products-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.orders__product {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px;
+  background-color: #FFE89F;
+  border-radius: 5px;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 .main {
-  margin: 10px 20px;
+  flex: 1 0 100%;
+  padding: 25px 50px;
 }
 
 .title {
@@ -640,8 +732,7 @@
 
 .shop {
   display: flex;
-  max-width: 1600px;
+  max-width: 1760px;
   margin: 0 auto;
-  padding-inline: 50px;
   gap: 50px;
 }/*# sourceMappingURL=App.css.map */
