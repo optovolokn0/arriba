@@ -5,7 +5,9 @@ from django.dispatch import receiver
 from simple_history.models import HistoricalRecords
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group, Permission
 from django.contrib.auth.models import PermissionsMixin
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from django.db.models.signals import pre_save
+from django.conf import settings
 import uuid
 
 # Create your models here.
@@ -23,7 +25,7 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
-    
+   
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.AutoField(primary_key=True)
     email = models.EmailField(unique=True)
@@ -56,17 +58,27 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
     
+    
+class UserToken(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    token = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    def __str__(self):
+        return f"Token for {self.user.email}"
+
+
 class Role(models.Model):
-    SELLER = 'seller'
     CLIENT = 'client'
+    SELLER = 'seller'  
     ADMIN = 'admin'
     
     ROLE_CHOICES = [
-        (SELLER, 'Seller'),
         (CLIENT, 'Client'),
+        (SELLER, 'Seller'),     
         (ADMIN, 'Admin'),
     ]
-    name = models.CharField(max_length=50, choices=ROLE_CHOICES, unique=True)
+    name = models.CharField(max_length=7, choices=ROLE_CHOICES, unique=True)
 
     def __str__(self):
         return self.name
@@ -74,7 +86,7 @@ class Role(models.Model):
 class Brand(models.Model):
     brand_id = models.AutoField(primary_key=True)
     brand_name = models.CharField(max_length=100)
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
     def __str__(self):
         return self.brand_name
@@ -82,7 +94,7 @@ class Brand(models.Model):
 class Category(models.Model):
     category_id = models.AutoField(primary_key=True)
     category_name = models.CharField(max_length=100)
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
     def __str__(self):
         return self.category_name
@@ -99,18 +111,16 @@ class Product(models.Model):
     product_name = models.CharField(max_length=100)
     product_price = models.DecimalField(max_digits=10, decimal_places=2)
     product_description = models.TextField()
-    seller = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, limit_choices_to={'role__name': Role.SELLER})
+    seller = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, limit_choices_to={'role_id': 12})
     brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
-    # manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
     def save(self, *args, **kwargs):
         if not self.product_id:
-            # Формат SKU
-            category_code = str(self.category.category_id).zfill(3)  # Пример: 001
-            manufacturer_code = str(self.brand.brand_id).zfill(3)  # Пример: 005
-            product_code = str(Product.objects.count() + 1).zfill(4)  # Пример: 0001
+            category_code = str(self.category.category_id).zfill(3) 
+            manufacturer_code = str(self.brand.brand_id).zfill(3)  
+            product_code = str(Product.objects.count() + 1).zfill(4)  
             
             self.product_id = f"{category_code}-{manufacturer_code}-{product_code}"  # Пример SKU: 001-005-0001
         super().save(*args, **kwargs)
@@ -120,6 +130,11 @@ class Product(models.Model):
 
     def __str__(self):
         return self.product_name
+
+class Characteristic(models.Model):
+    product = models.ForeignKey(Product, related_name='characteristics', on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    value = models.CharField(max_length=255)
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
@@ -139,7 +154,7 @@ class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
     def __str__(self):
         return f"Review by {self.user.email} on {self.product.product_name}"
@@ -164,7 +179,7 @@ class Purchase(models.Model):
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sales', limit_choices_to={'role__name': Role.SELLER})
     purchase_date = models.DateTimeField(auto_now_add=True)
     products = models.ManyToManyField(Product, through='PurchaseProduct')
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
     def __str__(self):
         return f'Purchase {self.purchase_id} by {self.customer} on {self.purchase_date}'
@@ -200,7 +215,7 @@ class InvoiceRecord(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     product_count = models.IntegerField()
     product_price = models.DecimalField(max_digits=10, decimal_places=2)
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
     def __str__(self):
         return f"Invoice entry for {self.product.product_name} - {self.product_count} items"
@@ -210,7 +225,7 @@ class ProductPriceChange(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     date_price_change = models.DateField()
     new_price = models.DecimalField(max_digits=10, decimal_places=2)
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
     def __str__(self):
         return f"Price change for {self.product.product_name} to {self.new_price}"
@@ -218,16 +233,22 @@ class ProductPriceChange(models.Model):
 class Basket(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product, through='BasketProduct')
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
     def __str__(self):
         return f"Basket for {self.user.email}"
+    
+    def get_total_price(self):
+        total = 0
+        for basket_product in BasketProduct.objects.filter(basket=self):
+            total += basket_product.product.price * basket_product.quantity
+        return total
     
 class BasketProduct(models.Model):
     basket = models.ForeignKey(Basket, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField()
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
     def __str__(self):
         return f"{self.quantity} of {self.product.product_name} in basket"
@@ -240,4 +261,43 @@ class VerificationToken(models.Model):
     is_used = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Token for {self.user}"
+        return f"Token for {self.user}" 
+    
+class PaymentLog(models.Model):
+    payment_id = models.CharField(max_length=100)
+    event_type = models.CharField(max_length=50)
+    status = models.CharField(max_length=20)
+    raw_data = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Payment {self.payment_id} - {self.status}"
+    
+class Order(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Ожидает оплаты'),
+        ('paid', 'Оплачено'),
+        ('shipped', 'Отправлено'),
+        ('completed', 'Завершено'),
+        ('canceled', 'Отменено'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_id = models.CharField(max_length=100, null=True, blank=True)
+    metadata = models.JSONField(null=True, blank=True) 
+
+    def __str__(self):
+        return f"Order {self.id} by {self.user.username} - {self.status}"
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2) 
+    
+    def __str__(self):
+        return f"{self.product.name} x {self.quantity}"
