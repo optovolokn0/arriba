@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Context } from "../main";
 import BasketItem from "../components/BasketItem";
 import { fetchProduct, payBasket } from "../http/services/productService";

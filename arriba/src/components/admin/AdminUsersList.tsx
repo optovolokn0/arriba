@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchUsers } from "../../http/services/usersService";
 import { IUser } from "../../models";
 import ConfirmDelete from "../modals/ConfirmDelete";

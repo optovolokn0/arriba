@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { observer } from "mobx-react-lite";
 import AdminCategoriesList from "../components/admin/AdminCategoriesList";
 import AdminBrandsList from "../components/admin/AdminBrandsList";

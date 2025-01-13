@@ -1,5 +1,4 @@
 import { observer } from "mobx-react-lite";
-import React from "react";
 import { REGISTRATION_ROUTE, SHOP_ROUTE } from "../utils/consts";
 import logo from '../../public/logoArriba.png'
 

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { IProduct } from "../models";
 import apiClient from "../http/apiClient";
 import { Context } from "../main";

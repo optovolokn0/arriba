@@ -1,4 +1,3 @@
-import React from "react";
 import ProductsList from "../components/ProductsList";
 // import { Spinner } from "react-bootstrap";
 function Shop(){

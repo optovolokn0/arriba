@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { Context } from "../../main";
 import CreateBrand from "../modals/CreateBrand";
 import { observer } from "mobx-react-lite";

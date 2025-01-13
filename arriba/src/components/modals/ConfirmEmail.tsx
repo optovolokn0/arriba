@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { Modal } from "react-bootstrap";
 import { Context } from "../../main";
 import { useNavigate } from "react-router-dom";

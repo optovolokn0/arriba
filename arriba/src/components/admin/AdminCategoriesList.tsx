@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { Context } from "../../main";
 import CreateCategory from "../modals/CreateCategory";
 import { observer } from "mobx-react-lite";

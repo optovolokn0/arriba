@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { ADMIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, SELLER_ROUTE, SHOP_ROUTE } from "../utils/consts";
 import { useLocation, useNavigate } from "react-router-dom";
 import bg from '../../public/bg-auth.png'

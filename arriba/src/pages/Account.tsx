@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import AccountSettings from "../components/account/AccountSettings";
 import { useNavigate } from "react-router-dom";
 import { BASKET_ROUTE, ORDERS_ROUTE } from "../utils/consts";
