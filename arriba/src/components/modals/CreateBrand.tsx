@@ -27,7 +27,7 @@ const CreateBrand = ({show, onHide} : modalProps) => {
             </Modal.Header>
             <Modal.Body>
                 <form >
-                    <input onChange={(e) => setBrand(e.target.value)} value={brand} type="text" placeholder='Введите название бренда'/>
+                    <input className="modal-brand__input" onChange={(e) => setBrand(e.target.value)} value={brand} type="text" placeholder='Введите название бренда'/>
                 </form>
             </Modal.Body>
             <Modal.Footer>

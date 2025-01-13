@@ -5,8 +5,12 @@ import ProductItem from "./ProductItem";
 
 const ProductsList = observer(() => {
     const { product } = useContext(Context)!
-
-    const filteredProducts = product.products.filter((prod) => prod.category === product.selectedCategory && prod.product_name.toLowerCase().includes(product.searchedText.toLowerCase()))
+    const filteredProducts = product.products.filter((prod) => {
+        const matchesCategory = product.selectedCategory ? prod.category === product.selectedCategory : true;
+        const matchesSearchText = prod.product_name.toLowerCase().includes(product.searchedText.toLowerCase());
+        return matchesCategory && matchesSearchText;
+    });
+    
     return (
         <ul className="products-list">
             {filteredProducts.length > 0 ?

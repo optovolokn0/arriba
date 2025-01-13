@@ -126,13 +126,13 @@ const CreateProduct = observer(({ show, onHide }: modalProps) => {
                     <input className="modal__input mt-3" value={descr} onChange={e => setDescr(e.target.value)} type="text" placeholder="Введите описание товара" />
                     <input className="mt-3" type="file" onChange={handleFileChange} />
                     <hr />
-                    <Button onClick={addCharacteristic}>Добавить новую характеристику</Button>
+                    <Button className="characteristic__btn" onClick={addCharacteristic}>Добавить новую характеристику</Button>
                     {
                         characteristics.map(char =>
                             <div className="characteristic__container" key={char.char_id}>
-                                <input className="modal__input" type="text" value={char.name} onChange={e => updateCharacteristic(char.char_id, "name", e.target.value)} placeholder="Введите название свойства" />
-                                <input className="modal__input" type="text" value={char.value} onChange={e => updateCharacteristic(char.char_id, "value", e.target.value)} placeholder="Введите описание свойства" />
-                                <button className="btn characteristic__btn" onClick={() => removeCharacteristic(char.char_id)}>Удалить</button>
+                                <input className="modal__input characteristic__input" type="text" value={char.name} onChange={e => updateCharacteristic(char.char_id, "name", e.target.value)} placeholder="Введите название свойства" />
+                                <input className="modal__input characteristic__input" type="text" value={char.value} onChange={e => updateCharacteristic(char.char_id, "value", e.target.value)} placeholder="Введите описание свойства" />
+                                <button className="btn characteristic__btn-delete" onClick={() => removeCharacteristic(char.char_id)}>Удалить</button>
                             </div>
                         )
                     }

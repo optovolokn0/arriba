@@ -27,7 +27,7 @@ const CreateCategory = ({ show, onHide }: modalProps) => {
             </Modal.Header>
             <Modal.Body>
                 <form >
-                    <input onChange={(e) => setCategory(e.target.value)} value={category} type="text" placeholder='Введите название категории' />
+                    <input className='modal-category__input' onChange={(e) => setCategory(e.target.value)} value={category} type="text" placeholder='Введите название категории' />
                 </form>
             </Modal.Body>
             <Modal.Footer>

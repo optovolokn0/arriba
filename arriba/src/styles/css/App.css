@@ -351,6 +351,12 @@
   border-radius: 5px;
   background-color: #FF4310;
 }
+.basket-item__quantity {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .payment {
   display: flex;
   flex-direction: column;
@@ -460,6 +466,14 @@
   font-size: 18px;
 }
 
+.modal-brand__input {
+  min-width: 300px;
+}
+
+.modal-category__input {
+  min-width: 300px;
+}
+
 .info__container {
   margin-top: 5px;
   display: flex;
@@ -471,22 +485,41 @@
   background-color: red;
 }
 
+.characteristic__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.characteristic__btn {
+  margin-bottom: 10px;
+}
+.characteristic__btn-delete {
+  background-color: red;
+}
+.characteristic__input {
+  min-width: 300px;
+}
+
 .products-list {
   width: 100%;
   display: flex;
+  margin: 0 auto;
   flex-wrap: wrap;
-  gap: 50px;
+  gap: calc((100% - 1350px) / 5);
 }
 .products-list__title {
   font-size: 30px;
 }
 
 .product {
+  width: 200px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-  width: 200px;
+  margin-bottom: 25px;
+  margin-right: 25px;
 }
 .product__container {
   height: 100%;
@@ -553,7 +586,7 @@
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 25px;
 }
 
 .account {
@@ -717,7 +750,7 @@
 
 .main {
   flex: 1 0 100%;
-  padding: 25px 50px;
+  padding: 25px 100px;
 }
 
 .title {
@@ -734,5 +767,4 @@
   display: flex;
   max-width: 1760px;
   margin: 0 auto;
-  gap: 50px;
 }/*# sourceMappingURL=App.css.map */
