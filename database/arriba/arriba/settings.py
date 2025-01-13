@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 from datetime import timedelta
 import corsheaders
+from decouple import config
 from django.urls import reverse_lazy
 from yookassa import Configuration
 
@@ -25,10 +26,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-cd#d7gs+@tzsz^e=qpn7@s!qe5x_3q8xf$db3e4cql77$!$ztn'
-
-Configuration.account_id = '1010380'
-Configuration.secret_key = 'test_wcechxx7hG1sgtfCK2wYjDARafsR4SbfMeRys2x-wsE'
+SECRET_KEY = config('SECRET_KEY')
+Configuration.account_id = config('YOOKASSA_ACCOUNT_ID')
+Configuration.secret_key = config('YOOKASSA_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'store',
     'rest_framework',
     'rest_framework.authtoken',

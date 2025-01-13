@@ -241,7 +241,7 @@ class Basket(models.Model):
     def get_total_price(self):
         total = 0
         for basket_product in BasketProduct.objects.filter(basket=self):
-            total += basket_product.product.price * basket_product.quantity
+            total += basket_product.product.product_price * basket_product.quantity
         return total
     
 class BasketProduct(models.Model):
@@ -291,7 +291,7 @@ class Order(models.Model):
     metadata = models.JSONField(null=True, blank=True) 
 
     def __str__(self):
-        return f"Order {self.id} by {self.user.username} - {self.status}"
+        return f"Order {self.id} by {self.user.name} - {self.status}"
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
