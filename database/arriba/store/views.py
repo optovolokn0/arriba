@@ -1,4 +1,6 @@
 import datetime
+import logging
+logger = logging.getLogger(__name__)
 from django.db import IntegrityError
 from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
@@ -192,12 +194,11 @@ class ProductViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
 class BasketPaymentView(APIView):
+    queryset = Basket.objects.all()
     permission_classes = [IsAuthenticated]
-
     def post(self, request):
         user = request.user
         description = request.data.get("description", "Оплата корзины")
-
         try:
             payment = create_payment_from_basket(user=user, description=description)
             return Response({
@@ -208,37 +209,63 @@ class BasketPaymentView(APIView):
             }, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
+    # def post(self, request):
+    #     print("Метод post вызван")
+    #     return Response({"message": "POST работает!"}, status=status.HTTP_200_OK)
 class PaymentWebhookView(APIView):
     def post(self, request):
+        print("Webhook вызван")
+        print("Данные запроса:", request.data)
+
         event_data = request.data
         event_type = event_data.get("event")
+        if not event_type:
+            print("Ошибка: отсутствует тип события")
+            return Response({"error": "Invalid event data"}, status=status.HTTP_400_BAD_REQUEST)
+
+        print("Тип события:", event_type)
         payment_object = event_data.get("object", {})
         payment_status = payment_object.get("status")
         payment_id = payment_object.get("id")
 
-        if event_type == "payment.succeeded" and payment_status == "succeeded":
+        if (event_type == "payment.succeeded" and payment_status == "succeeded") or event_type == "payment.waiting_for_capture":
             user_id = payment_object.get("metadata", {}).get("user_id")
-            if user_id:
+            if not user_id:
+                print("Ошибка: отсутствует user_id в метаданных")
+                return Response({"error": "User ID not found in metadata"}, status=status.HTTP_400_BAD_REQUEST)
+
+            try:
                 user = User.objects.get(id=user_id)
                 basket = Basket.objects.filter(user=user).first()
-                if basket:
-                    order = Order.objects.create(
-                        user=user,
-                        total_price=basket.get_total_price(),
-                        status='paid',
-                        payment_id=payment_id,
-                    )
-                    for basket_item in basket.products.all():
-                        OrderItem.objects.create(
-                            order=order,
-                            product=basket_item.product,
-                            quantity=basket_item.quantity,
-                            price=basket_item.product.price,
-                        )
-                    basket.products.clear()
+                if not basket:
+                    print("Ошибка: корзина не найдена")
+                    return Response({"error": "Basket not found"}, status=status.HTTP_400_BAD_REQUEST)
 
-            return Response({"status": "Order created and basket cleared"}, status=status.HTTP_200_OK)
+                order = Order.objects.create(
+                    user=user,
+                    total_price=basket.get_total_price(),
+                    status='paid',
+                    payment_id=payment_id,
+                )
+                print("Заказ создан:", order)
+
+                for basket_item in BasketProduct.objects.filter(basket=basket):
+                    OrderItem.objects.create(
+                        order=order,
+                        product=basket_item.product,
+                        quantity=basket_item.quantity, 
+                        price=basket_item.product.product_price,  
+                    )
+                    print(f"Добавлен OrderItem для продукта {basket_item.product.product_name}")
+
+                basket.products.clear()
+                print("Корзина очищена")
+
+                return Response({"status": "Order created and basket cleared"}, status=status.HTTP_200_OK)
+
+            except Exception as e:
+                print("Ошибка при создании заказа или очистке корзины:", e)
+                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({"status": "Webhook received, but no action taken"}, status=status.HTTP_200_OK)
 

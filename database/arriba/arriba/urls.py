@@ -26,6 +26,7 @@ from store import views
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from rest_framework.urlpatterns import format_suffix_patterns
 
 
 schema_view = get_schema_view(
@@ -50,6 +51,6 @@ urlpatterns = [
     path('api/reset-password-confirm/<uuid:token>/', views.PasswordResetConfirmView.as_view()),
     path('api/logout/', views.LogoutView.as_view()),
     path('api/profile/', views.UserProfileView.as_view()),
-    path('api/basket/payment/', views.BasketPaymentView.as_view()),
+    path('api/payment/', views.BasketPaymentView.as_view()),
     path('api/payments/webhook/', views.PaymentWebhookView.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
