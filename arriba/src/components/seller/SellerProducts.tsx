@@ -42,7 +42,7 @@ const SellerProducts = observer(()=>{
                         </div>
                     </div>
                 </div>
-                <button onClick={()=>setConfirmDelete(true)} className="btn admin__btn admin__btn-delete-product">Удалить</button>
+                <button onClick={()=>setConfirmDelete(true)} className="btn admin__btn admin__btn-delete">Удалить</button>
                 <ConfirmDelete show={confirmDelete} onHide={() => setConfirmDelete(false)} item={item}/>
             </div>
             ))}

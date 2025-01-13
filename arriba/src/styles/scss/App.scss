@@ -10,9 +10,20 @@
 @import './favorites';
 @import './account';
 @import './seller';
+@import './footer';
+@import './orders';
+
+.wrapper{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
 
 .main{
-    margin: 10px 20px;
+    // display: flex;
+    flex: 1 0 100%;
+    padding: 25px 50px;
+    // background-color: #fffcf0;
 }
 
 .title{
@@ -27,9 +38,8 @@
 
 .shop{
     display: flex;
-    max-width: 1600px;
+    max-width: 1760px;
     margin: 0 auto;
-    padding-inline: 50px;
     gap: 50px;
 }
 

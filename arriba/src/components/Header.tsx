@@ -8,9 +8,9 @@ import ReactDOM from "react-dom"
 import CategoriesBar from "./CategoriesBar"
 
 const Header = observer(() => {
-    const { user } = useContext(Context)!
+    const { user, product } = useContext(Context)!
     const history = useNavigate()
-
+    const [searchedText, setSearchedText] = useState('')
     const [isCategoriesBarVisible, setIsCategoriesBarVisible] = useState(false)
 
     const toggleCategoriesBar = () => {
@@ -21,6 +21,14 @@ const Header = observer(() => {
     const closeCategoriesBar = () => {
         setIsCategoriesBarVisible(false)
     };
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchedText(event.target.value);
+    }
+
+    const handleSearch = () => {
+        product.setSearchedText(searchedText)
+    }
 
     return (
         <header className="header">
@@ -46,7 +54,8 @@ const Header = observer(() => {
                             </>,
                             document.body
                         )}
-                        <input className="header__input" type="text" placeholder="Найти на Arriba" />
+                        <input className="header__input" type="text" value={searchedText} onChange={handleInputChange} placeholder="Найти на Arriba" />
+                        <button className="btn header__btn" onClick={handleSearch}>Поиск</button>
                     </div>
                     :
                     null

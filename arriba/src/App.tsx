@@ -4,6 +4,7 @@ import AppRouter from './components/AppRouter';
 import Header from './components/Header';
 import { Context } from './main';
 import { ADMIN_ROUTE, SELLER_ROUTE, SHOP_ROUTE } from './utils/consts';
+import Footer from './components/Footer';
 
 function App() {
 	const { user, product } = useContext(Context)!
@@ -39,10 +40,11 @@ function App() {
 
 	
 	return (
-		<>
+		<div className='wrapper'>
 			<Header />
 			<AppRouter />
-		</>
+			<Footer/>
+		</div>
 	)
 }
 

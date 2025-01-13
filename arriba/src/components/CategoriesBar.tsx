@@ -17,6 +17,7 @@ const CategoriesBar: React.FC<CategoriesBarProps> = observer(({ onClose }) => {
     return (
         <div className="categories">
             <ul className="categories__list">
+                Категории
                 {product.categories.map(category =>
                     <li className="categories__item"
                      key={category.category_id}

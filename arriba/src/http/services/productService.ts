@@ -1,5 +1,5 @@
 
-import { IProduct } from "../../models";
+import { IPayResponse, IProduct } from "../../models";
 import apiClient from "../apiClient";
 
 //категории
@@ -96,4 +96,18 @@ export const fetchProductReviews = async (product_id: number) => {
 
 export const addProductReview = async (product_id: number) => {
     return await apiClient.post(`api/reviews/${product_id}/`)
+}
+
+
+//оплата
+
+export const payBasket = async (): Promise<IPayResponse> => {
+    const response = await apiClient.post('api/payment/')
+    return response.data
+}
+
+//заказы
+
+export const fetchOrdersData = async () => {
+    return await apiClient.get('api/orders/')
 }

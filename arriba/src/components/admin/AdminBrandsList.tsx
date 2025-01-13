@@ -14,8 +14,8 @@ const AdminBrandsList = observer(() => {
                 {product.brands.map(item =>
                     <li key={item.brand_id} className="admin__item">{item.brand_name}
                         <div className="btn-container">
-                            <button className="btn change-btn">Изменить</button>
-                            <button onClick={() => product.deleteBrand(item.brand_id)} className="btn delete-btn">Удалить</button>
+                            <button className="btn admin__btn-change">Изменить</button>
+                            <button onClick={() => product.deleteBrand(item.brand_id)} className="btn admin__btn-delete">Удалить</button>
                         </div>
                     </li>
                 )}

@@ -6,6 +6,9 @@
     }
 
     &__logo {
+        display: flex;
+        gap: 5px;
+        align-items: center;
         color: #000;
     }
 

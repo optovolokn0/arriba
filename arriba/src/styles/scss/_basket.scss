@@ -38,8 +38,7 @@
     // }
 
     &__img{
-        width: 100px;
-        height: 100px;
+        height: 120px;
     }
 
     &__delete-btn{
@@ -47,5 +46,9 @@
         border: 1px solid #000;
         border-radius: 5px;
         background-color: #FF4310;
+    }
+
+    &__quantity{
+        
     }
 }
